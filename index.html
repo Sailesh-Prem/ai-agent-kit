@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Agent Starter Kit · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --bg:       #111213;
+  --bg2:      #161719;
+  --blue:     #2979FF;
+  --blue-dim: rgba(41,121,255,0.10);
+  --blue-glow:rgba(41,121,255,0.18);
+  --glass:    rgba(255,255,255,0.04);
+  --text:     #F5F5F5;
+  --muted:    #6b7280;
+  --red:      #ef4444;
+  --green:    #22c55e;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── BACKGROUND ORBS ── */
+.orb-wrap {
+  position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+}
+.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(41,121,255,0.09) 0%, transparent 70%); left: -200px; top: -100px; }
+.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(41,121,255,0.06) 0%, transparent 70%); right: -100px; top: 40%; }
+.orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(41,121,255,0.05) 0%, transparent 70%); left: 30%; bottom: -100px; }
+
+/* ── LAYOUT ── */
+.container { max-width: 740px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* ── HERO ── */
+.hero {
+  padding: 72px 0 48px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--blue-glow); border-radius: 100px;
+  padding: 6px 16px; font-family: 'DM Mono', monospace;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--blue);
+  background: var(--blue-dim);
+}
+.hero-badge .dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero h1 {
+  font-family: 'Syne', sans-serif; font-size: clamp(32px, 6vw, 52px);
+  font-weight: 800; line-height: 1.1;
+}
+.hero h1 span { color: var(--blue); }
+.hero p { color: var(--muted); font-size: 15px; max-width: 500px; }
+.hero-from {
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.hero-from span { color: var(--blue); }
+
+/* ── SECTION ── */
+section { padding: 40px 0; }
+.section-label {
+  font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--blue); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::before { content:''; display:inline-block; width:24px; height:2px; background:var(--blue); border-radius:1px; }
+.section-title {
+  font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
+  margin-bottom: 20px; line-height: 1.2;
+}
+.section-title span { color: var(--blue); }
+
+/* ── GLASS CARD ── */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--blue-glow);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.025);
+  padding: 24px;
+  margin-bottom: 14px;
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(41,121,255,0.3), transparent);
+}
+.card-left { border-left: 3px solid var(--blue); border-radius: 0 16px 16px 0; }
+
+/* ── TOOL CARD ── */
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:520px){ .tool-grid { grid-template-columns: 1fr; } }
+
+.tool-card {
+  background: var(--glass);
+  border: 1px solid var(--blue-glow);
+  border-radius: 12px;
+  padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.tool-name {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--text);
+}
+.tool-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.tool-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--green); margin-top: 4px;
+}
+.tool-tag::before { content:''; width:5px; height:5px; background:var(--green); border-radius:50%; }
+
+/* ── STEP LIST ── */
+.step {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 18px 20px; border-bottom: 1px solid rgba(41,121,255,0.07);
+}
+.step:last-child { border-bottom: none; }
+.step-num {
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue);
+  letter-spacing: 0.1em; min-width: 28px; margin-top: 2px;
+}
+.step-content { flex: 1; }
+.step-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.step-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.step-body strong { color: var(--text); }
+
+/* ── PROMPT BOX ── */
+.prompt-box {
+  background: rgba(41,121,255,0.06);
+  border: 1px solid rgba(41,121,255,0.2);
+  border-radius: 10px; padding: 16px 18px;
+  font-family: 'DM Mono', monospace; font-size: 12px; line-height: 1.7;
+  color: #c9d4e8; white-space: pre-wrap; margin-top: 10px;
+  position: relative;
+}
+.prompt-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--blue); margin-bottom: 8px;
+}
+
+/* ── WORKFLOW ── */
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flow-item {
+  display: flex; gap: 16px; align-items: flex-start; position: relative;
+  padding-bottom: 20px;
+}
+.flow-item:last-child { padding-bottom: 0; }
+.flow-line {
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.flow-circle {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--blue-dim);
+  border: 1px solid var(--blue-glow); display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); flex-shrink: 0;
+}
+.flow-connector {
+  width: 1px; flex: 1; min-height: 24px;
+  background: linear-gradient(180deg, var(--blue-glow), transparent);
+  margin-top: 4px;
+}
+.flow-item:last-child .flow-connector { display: none; }
+.flow-text { padding-top: 5px; }
+.flow-text h4 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+.flow-text p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── SCRIPT CARD ── */
+.script-block {
+  background: var(--glass);
+  border: 1px solid var(--blue-glow);
+  border-radius: 12px; padding: 20px 22px;
+  margin-bottom: 12px;
+}
+.script-who {
+  font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--blue); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.script-who::before { content:''; width:4px; height:4px; background:var(--blue); border-radius:50%; }
+.script-text { font-size: 14px; line-height: 1.7; color: var(--text); }
+.script-note { font-size: 12px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+/* ── CHECKLIST ── */
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(41,121,255,0.08);
+  border-radius: 8px;
+}
+.check-icon { flex-shrink: 0; margin-top: 1px; }
+.check-text { font-size: 13px; line-height: 1.5; }
+.check-text strong { color: var(--text); }
+.check-text span { color: var(--muted); }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(41,121,255,0.15), transparent); margin: 8px 0; }
+
+/* ── PILL / TAG ── */
+.pill { display: inline-block; background: var(--blue); color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; border-radius: 6px; padding: 5px 12px; }
+.tag { display: inline-block; border: 1px solid rgba(41,121,255,0.35); color: var(--blue); font-family: 'DM Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; border-radius: 4px; padding: 3px 8px; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid rgba(41,121,255,0.1);
+  padding: 40px 0;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+footer .f-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+footer .f-name span { color: var(--blue); }
+footer .f-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; }
+footer .f-note { font-size: 12px; color: var(--muted); max-width: 340px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width: 600px) {
+  .hero { padding: 48px 0 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb-wrap">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="container">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <div class="hero-badge"><span class="dot"></span> Free Resource · No Sign-Up</div>
+    <h1>The <span>AI Agent</span><br>Starter Kit</h1>
+    <p>Everything a student in Pakistan needs to build, pitch, and sell their first AI agent — using zero-budget tools.</p>
+    <span class="hero-from">By <span>@sailesh</span> · builder in public · karachi</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ WHAT'S INSIDE ═══ -->
+  <section>
+    <div class="section-label">inside this kit</div>
+    <div class="section-title">What you're getting <span>today</span></div>
+
+    <div class="checklist">
+      <div class="check-item">
+        <div class="check-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="rgba(41,121,255,0.15)"/><polyline points="5,9 8,12 13,6" stroke="#2979FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="check-text"><strong>3 Ready-to-Use Agent Workflow Templates</strong><br><span>Step-by-step blueprints using free tools. No coding required.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="rgba(41,121,255,0.15)"/><polyline points="5,9 8,12 13,6" stroke="#2979FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="check-text"><strong>The PKR 0/Month Tool Stack</strong><br><span>The exact tools running a one-person AI agency — all on free tiers.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="rgba(41,121,255,0.15)"/><polyline points="5,9 8,12 13,6" stroke="#2979FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="check-text"><strong>5-Step Client Pitch Script</strong><br><span>The exact DM script to pitch AI agents to local businesses in Pakistan.</span></div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 18 18"><circle cx="9" cy="9" r="9" fill="rgba(41,121,255,0.15)"/><polyline points="5,9 8,12 13,6" stroke="#2979FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="check-text"><strong>One-Page "What Is an AI Agent?" Explainer</strong><br><span>Share this with clients who have no idea what AI agents are.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ TOOL STACK ═══ -->
+  <section>
+    <div class="section-label">free tool stack</div>
+    <div class="section-title">Your <span>PKR 0/Month</span> AI Stack</div>
+
+    <div class="tool-grid">
+      <div class="tool-card">
+        <div class="tool-name">n8n (Self-host)</div>
+        <div class="tool-desc">Build visual automation workflows. Connect any app, run AI agents, trigger actions 24/7. Use the free cloud tier to start.</div>
+        <div class="tool-tag">free tier available</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">ChatGPT Free / Claude Free</div>
+        <div class="tool-desc">Your AI brain. Use inside n8n via free API credits or directly for content, prompts, and client deliverables.</div>
+        <div class="tool-tag">free tier available</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Google Sheets</div>
+        <div class="tool-desc">Your database. Store leads, track clients, log agent outputs. Connects natively to n8n with zero setup cost.</div>
+        <div class="tool-tag">completely free</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Notion</div>
+        <div class="tool-desc">Deliver your kit, SOPs, and reports to clients. Build your public profile and package your service professionally.</div>
+        <div class="tool-tag">free forever plan</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">Make.com</div>
+        <div class="tool-desc">Alternative to n8n. Friendlier UI, 1,000 operations/month free. Great for client-facing automations you want to hand off.</div>
+        <div class="tool-tag">1000 ops/month free</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-name">LinkedIn + ManyChat</div>
+        <div class="tool-desc">Your distribution engine. Post carousels, collect comments, auto-DM leads. ManyChat free handles 1,000 contacts/month.</div>
+        <div class="tool-tag">free plan available</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ 3 AGENT TEMPLATES ═══ -->
+  <section>
+    <div class="section-label">agent templates</div>
+    <div class="section-title">3 Agents You Can <span>Build Today</span></div>
+
+    <!-- Template 1 -->
+    <div class="card card-left" style="margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.14em; color:var(--blue); margin-bottom:4px;">Template 01</div>
+          <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:18px;">Lead Gen Agent</div>
+        </div>
+        <span class="pill">Sell for $50–200/month</span>
+      </div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">Scrapes local businesses, finds contact info, sends personalised cold outreach. Runs 24/7 without you touching it. Perfect for restaurants, salons, and clinics in Karachi, Lahore, Islamabad.</p>
+      <div class="section-label" style="margin-bottom:10px; font-size:9px;">workflow</div>
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">1</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Trigger: Google Sheets row added</h4><p>Add a business name + city to a Google Sheet. The agent wakes up instantly.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">2</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>n8n searches for contact info</h4><p>Uses free HTTP request node to find the business email or phone from public listings.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">3</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>ChatGPT writes a personalised pitch</h4><p>Sends business name, city, and niche to ChatGPT API. Gets back a custom 3-line cold outreach message.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">4</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Gmail / WhatsApp sends the message</h4><p>n8n sends the email via Gmail node (free) or logs it to a Sheets "outbox" for manual WhatsApp send.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template 2 -->
+    <div class="card card-left" style="margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.14em; color:var(--blue); margin-bottom:4px;">Template 02</div>
+          <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:18px;">Content Repurposing Agent</div>
+        </div>
+        <span class="pill">Sell for $100–300/month</span>
+      </div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">Takes one long-form video or blog post and automatically turns it into 5 LinkedIn posts, 3 tweets, and a WhatsApp broadcast message. Ideal for coaches, consultants, and local brand owners.</p>
+      <div class="section-label" style="margin-bottom:10px; font-size:9px;">workflow</div>
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">1</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Client drops YouTube link into Google Form</h4><p>Simple Google Form submission triggers the n8n workflow automatically via webhook.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">2</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>n8n extracts transcript</h4><p>Uses free YouTube transcript API to pull the full video transcript as plain text.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">3</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>ChatGPT repurposes into 5 formats</h4><p>One prompt generates LinkedIn carousel hook, tweet thread, WhatsApp blast, email subject line, and short-form reel script.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">4</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Delivered to client's Notion page</h4><p>n8n creates a new Notion page with all 5 content pieces. Client reviews and posts. You never write a word.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template 3 -->
+    <div class="card card-left">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.14em; color:var(--blue); margin-bottom:4px;">Template 03</div>
+          <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:18px;">Customer FAQ Bot</div>
+        </div>
+        <span class="pill">Sell for $80–150 one-time</span>
+      </div>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:16px; line-height:1.6;">Answers customer questions on WhatsApp or a website 24/7. Trained on the business's own FAQ, pricing, and location info. Every restaurant, clinic, and retail shop in Pakistan needs this.</p>
+      <div class="section-label" style="margin-bottom:10px; font-size:9px;">workflow</div>
+      <div class="flow">
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">1</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Collect business info in a Google Sheet</h4><p>Business fills a form: menu/services, pricing, hours, location, common questions. This becomes the AI's "knowledge base."</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">2</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Build a simple chatbot prompt</h4><p>Feed the Sheet data into a ChatGPT system prompt. "You are the assistant for [Business]. Answer only using this information: {data}"</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">3</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Connect to WhatsApp via n8n + Twilio free tier</h4><p>Twilio gives a free WhatsApp sandbox number. n8n receives messages and replies via ChatGPT in under 3 seconds.</p></div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-line"><div class="flow-circle">4</div><div class="flow-connector"></div></div>
+          <div class="flow-text"><h4>Deliver, charge, and retainer</h4><p>Charge setup fee upfront. Offer a PKR 5,000/month "maintenance" retainer to update the knowledge base monthly.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ PITCH SCRIPT ═══ -->
+  <section>
+    <div class="section-label">client pitch script</div>
+    <div class="section-title">The 5-Step DM That <span>Books Clients</span></div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.65;">Use this script to approach local business owners on WhatsApp, Instagram DMs, or LinkedIn. Works for restaurants, clinics, salons, coaching businesses, and e-commerce stores in Pakistan.</p>
+
+    <div class="script-block">
+      <div class="script-who">Message 1 — The opener (day 1)</div>
+      <div class="script-text">Hi [Name], I noticed [Business Name] on [Instagram/Google Maps/LinkedIn]. I work with local businesses in [City] to automate their customer responses and lead generation using AI. Would it be okay if I sent you a quick 60-second voice note explaining how it works?</div>
+      <div class="script-note">→ Always ask permission first. Response rate doubles when you ask before pitching.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-who">Message 2 — The proof (after they say yes)</div>
+      <div class="script-text">Thanks! So basically I built a small AI assistant for a [similar business] here in [City]. It answers customer questions on WhatsApp automatically — 24/7, even at 2am. They saved about 2 hours a day on customer service. I can build something similar for you in 3–4 days. Want me to show you how it would look for [Business Name] specifically?</div>
+      <div class="script-note">→ Make it specific to their business. Generic pitches get ignored.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-who">Message 3 — The free demo offer (if they're interested)</div>
+      <div class="script-text">I'll build you a quick free demo — no charge, no commitment. Just send me your most common customer questions, your menu / services, and your opening hours. I'll have a working demo ready for you within 24 hours.</div>
+      <div class="script-note">→ A free demo closes more clients than any pitch ever will.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-who">Message 4 — The close (after demo is shared)</div>
+      <div class="script-text">Here's your demo → [link]. This is exactly what your customers would experience. To deploy this live on your WhatsApp number, I charge PKR [8,000–15,000] one-time setup + PKR 3,000/month to keep it updated. Want to move forward?</div>
+      <div class="script-note">→ Price in PKR. Local pricing = local trust. Start low, raise as you grow.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-who">Message 5 — The follow-up (if no reply in 48 hrs)</div>
+      <div class="script-text">Hey [Name], just checking in on the demo I sent. I'm taking on 2 more businesses in [City] this month — wanted to make sure you had first right of refusal since you were interested. Let me know either way!</div>
+      <div class="script-note">→ Scarcity + no pressure. This follow-up alone recovers 30% of dead leads.</div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ CLIENT EXPLAINER ═══ -->
+  <section>
+    <div class="section-label">client explainer</div>
+    <div class="section-title">What Is an <span>AI Agent?</span><br><span style="color:var(--muted); font-size:18px; font-weight:600;">Tell your clients in plain Urdu-English</span></div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.14em; color:var(--blue); margin-bottom:12px;">the simple explanation</div>
+      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:12px; line-height:1.3;">Think of it as a <span style="color:var(--blue)">digital employee</span> that never sleeps, never asks for a raise, and never makes a mistake twice.</div>
+      <p style="font-size:13px; color:var(--muted); line-height:1.7;">An AI agent is software that can take instructions, think through a problem, use tools (like browsing the web, reading emails, sending messages), and complete tasks — automatically, 24/7. You give it a goal. It figures out the steps. You review the result.</p>
+    </div>
+
+    <div class="card">
+      <div style="font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:0.14em; color:var(--blue); margin-bottom:14px;">what it can do for local businesses</div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 16 16" style="margin-top:2px; flex-shrink:0;"><circle cx="8" cy="8" r="8" fill="rgba(41,121,255,0.15)"/><polyline points="4,8 7,11 12,5" stroke="#2979FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:13px; line-height:1.5;"><strong style="color:var(--text);">Answer customer questions</strong> <span style="color:var(--muted);">on WhatsApp at 3am when you're asleep</span></p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 16 16" style="margin-top:2px; flex-shrink:0;"><circle cx="8" cy="8" r="8" fill="rgba(41,121,255,0.15)"/><polyline points="4,8 7,11 12,5" stroke="#2979FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:13px; line-height:1.5;"><strong style="color:var(--text);">Find new leads</strong> <span style="color:var(--muted);">by searching the web and sending outreach messages automatically</span></p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 16 16" style="margin-top:2px; flex-shrink:0;"><circle cx="8" cy="8" r="8" fill="rgba(41,121,255,0.15)"/><polyline points="4,8 7,11 12,5" stroke="#2979FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:13px; line-height:1.5;"><strong style="color:var(--text);">Write your social media posts</strong> <span style="color:var(--muted);">every week based on your business updates</span></p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-start;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 16 16" style="margin-top:2px; flex-shrink:0;"><circle cx="8" cy="8" r="8" fill="rgba(41,121,255,0.15)"/><polyline points="4,8 7,11 12,5" stroke="#2979FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:13px; line-height:1.5;"><strong style="color:var(--text);">Send follow-up messages</strong> <span style="color:var(--muted);">to every person who enquired but never bought</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ NEXT STEPS ═══ -->
+  <section>
+    <div class="section-label">your next move</div>
+    <div class="section-title">Do This in the <span>Next 48 Hours</span></div>
+    <div class="card">
+      <div style="display:flex; flex-direction:column; gap:0;">
+        <div class="step">
+          <div class="step-num">01.</div>
+          <div class="step-content">
+            <div class="step-title">Sign up for n8n free cloud account</div>
+            <div class="step-body">Go to <strong>n8n.io</strong> → Start for free. No credit card. Takes 2 minutes. This is your agent-building workspace.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02.</div>
+          <div class="step-content">
+            <div class="step-title">Pick ONE template from above and build it</div>
+            <div class="step-body">Don't build all three. Pick the one that makes most sense for your network — if you know restaurant owners, build the FAQ Bot first.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03.</div>
+          <div class="step-content">
+            <div class="step-title">Find 5 local businesses on Instagram or Google Maps</div>
+            <div class="step-body">Search "salon Karachi", "clinic Lahore", "restaurant Islamabad" on Instagram. Screenshot their DM info. You now have 5 prospects.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04.</div>
+          <div class="step-content">
+            <div class="step-title">Send Message 1 from the pitch script above</div>
+            <div class="step-body">Send it to all 5. Don't edit it. Don't overthink it. The first message is just asking permission — it's not scary. Do it today.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05.</div>
+          <div class="step-content">
+            <div class="step-title">Post your progress on LinkedIn</div>
+            <div class="step-body">Even if nothing happened yet — post "I sent 5 cold DMs today to test my AI agent service. Here's what I learned." <strong>Building in public is your marketing.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="container" style="display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
+    <div class="f-name">Sailesh <span>Prem</span></div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+      <span class="tag">IT Student</span>
+      <span class="tag">AI Agents</span>
+      <span class="tag">Sales</span>
+      <span class="tag">Builder in Public</span>
+    </div>
+    <p class="f-note" style="font-size:12px; color:var(--muted);">Karachi, Pakistan · Learning, building, and sharing everything in public so you don't have to figure it out alone.</p>
+    <p style="font-family:'DM Mono',monospace; font-size:10px; color:rgba(107,114,128,0.5); letter-spacing:0.1em;">© 2026 Sailesh Prem · Free to share with credit</p>
+  </div>
+</footer>
+
+</body>
+</html>
