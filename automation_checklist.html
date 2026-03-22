@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Automation Checklist · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+.hero h1 span{color:var(--blue);}
+.hero p{color:var(--muted);font-size:14px;max-width:460px;}
+.hero-from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.hero-from b{color:var(--blue);font-weight:500;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-top:4px;}
+.prog-wrap{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 20px;margin-bottom:36px;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.prog-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+.prog-count{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--blue);}
+.prog-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),rgba(41,121,255,0.55));border-radius:3px;transition:width 0.4s ease;width:0%;}
+.reset-btn{background:transparent;border:1px solid rgba(41,121,255,0.2);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.reset-btn:hover{border-color:var(--blue);color:var(--blue);}
+.cat{margin:28px 0 12px;display:flex;align-items:center;gap:10px;}
+.cat-icon{width:34px;height:34px;border-radius:10px;background:var(--blue-dim);border:1px solid var(--blue-glow);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;}
+.cat-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:1px;}
+.item{display:flex;align-items:flex-start;gap:13px;padding:13px 15px;background:rgba(255,255,255,0.025);border:1px solid rgba(41,121,255,0.08);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.item:hover{border-color:rgba(41,121,255,0.2);background:rgba(41,121,255,0.04);}
+.item.done{background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.15);}
+.cb{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(41,121,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.2s;}
+.item.done .cb{background:var(--green);border-color:var(--green);}
+.ck{opacity:0;transition:opacity 0.2s;}
+.item.done .ck{opacity:1;}
+.ib{flex:1;}
+.itop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.iname{font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);line-height:1.4;}
+.item.done .iname{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(107,114,128,0.35);}
+.itool{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(41,121,255,0.25);border-radius:4px;padding:2px 7px;white-space:nowrap;flex-shrink:0;}
+.idesc{font-size:11px;color:var(--muted);line-height:1.55;margin-top:3px;}
+.isave{font-family:'DM Mono',monospace;font-size:9px;color:var(--green);letter-spacing:0.08em;margin-top:4px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:20px 0;}
+.done-msg{display:none;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:24px;text-align:center;margin-bottom:28px;}
+.cta-box{background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}.stats .stat:last-child{grid-column:span 2;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><span class="pulse"></span>Free Resource · Tick as You Go</div>
+    <h1>The <span>Automation</span><br>Checklist</h1>
+    <p>20 tasks every student and freelancer should automate — each paired with a free tool you can set up this weekend.</p>
+    <span class="hero-from">By <b>@sailesh</b> · builder in public · karachi</span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n">20</div><div class="stat-l">Tasks Listed</div></div>
+    <div class="stat"><div class="stat-n">PKR 0</div><div class="stat-l">Monthly Cost</div></div>
+    <div class="stat"><div class="stat-n" id="hrs">20+</div><div class="stat-l">Hrs Saved/Week</div></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span class="prog-label">your progress</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="prog-count" id="prog-txt">0 / 20</span>
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- ── CATEGORY 1: CONTENT ── -->
+  <div class="cat"><div class="cat-icon">✍️</div><div><div class="cat-title">Content & Social Media</div><div class="cat-sub">5 tasks</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Schedule LinkedIn posts a week in advance</span><span class="itool">Buffer Free</span></div><div class="idesc">Write all 7 posts on Sunday. Buffer auto-posts them at peak times daily. Never miss a day, never last-minute panic.</div><div class="isave">↩ saves ~4 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Turn YouTube videos into LinkedIn posts automatically</span><span class="itool">n8n + ChatGPT</span></div><div class="idesc">Paste a YouTube URL → n8n extracts the transcript → ChatGPT rewrites it as a carousel hook, caption, and tweet thread. Done in 30 seconds.</div><div class="isave">↩ saves ~5 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-generate 3 content angles from trending posts</span><span class="itool">n8n + RSS + ChatGPT</span></div><div class="idesc">n8n monitors RSS feeds in your niche. When something goes viral, ChatGPT spits out 3 LinkedIn angles for you. Fresh ideas delivered daily without scrolling.</div><div class="isave">↩ saves ~2 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Cross-post from LinkedIn to Instagram and Twitter</span><span class="itool">Make.com Free</span></div><div class="idesc">Post once on LinkedIn. Make.com copies the caption to Instagram and Twitter/X automatically. One post, three platforms, zero extra work.</div><div class="isave">↩ saves ~2 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-save great posts to a Notion swipe file</span><span class="itool">n8n + Notion</span></div><div class="idesc">Bookmark any LinkedIn post → n8n grabs the text and adds it to your Notion swipe file database. Build a library of proven hooks on autopilot.</div><div class="isave">↩ saves ~1 hr/week</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── CATEGORY 2: LEAD GEN ── -->
+  <div class="cat"><div class="cat-icon">🎯</div><div><div class="cat-title">Lead Generation & Outreach</div><div class="cat-sub">5 tasks</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Build a local business lead list from Google Maps</span><span class="itool">n8n + Sheets</span></div><div class="idesc">n8n hits the Google Maps API (free tier) to pull business names, numbers, and categories for any city and niche. 100 leads in under 5 minutes.</div><div class="isave">↩ saves ~5 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Send personalised cold emails automatically</span><span class="itool">n8n + Gmail + ChatGPT</span></div><div class="idesc">Add prospect name and business to Sheets → n8n triggers ChatGPT to write a custom 3-line pitch → Gmail sends it instantly. Personalised at scale.</div><div class="isave">↩ saves ~4 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto follow-up with prospects who didn't reply</span><span class="itool">n8n + Gmail</span></div><div class="idesc">Every 48 hours, n8n checks your Sheets tracker. If status = "No Reply," it sends a short follow-up automatically. Recover 30% of dead leads without lifting a finger.</div><div class="isave">↩ saves ~3 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Get notified the moment a lead opens your email</span><span class="itool">Streak Free (Gmail)</span></div><div class="idesc">Streak is a free Gmail CRM. It tells you exactly when and how many times a prospect opens your email. Follow up at the perfect moment every time.</div><div class="isave">↩ saves ~1 hr/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-DM freebie to anyone who comments a keyword</span><span class="itool">ManyChat Free (Instagram)</span></div><div class="idesc">Post on Instagram with a keyword CTA. ManyChat detects it and sends the freebie link in DMs instantly — 24/7, even while you sleep.</div><div class="isave">↩ saves ~3 hrs/week</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── CATEGORY 3: CLIENT MGMT ── -->
+  <div class="cat"><div class="cat-icon">🤝</div><div><div class="cat-title">Client Management</div><div class="cat-sub">5 tasks</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-send weekly progress reports to clients</span><span class="itool">n8n + Gmail + Sheets</span></div><div class="idesc">Every Friday at 5pm, n8n pulls your weekly data from Sheets and emails a formatted summary to your client. Professional, punctual, zero manual effort.</div><div class="isave">↩ saves ~2 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Send payment reminders automatically</span><span class="itool">n8n + Gmail</span></div><div class="idesc">Set invoice due dates in Sheets. n8n sends a polite reminder 3 days before and on the due date. Eliminates the awkward "just following up" message forever.</div><div class="isave">↩ saves ~1 hr/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-send onboarding docs when a client signs up</span><span class="itool">n8n + Gmail + Notion</span></div><div class="idesc">When a Google Form intake is submitted, n8n instantly emails the welcome doc, checklist, and Notion workspace link. Makes you look like a proper agency on day one.</div><div class="isave">↩ saves ~1.5 hrs/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Log every client email to a Sheets CRM automatically</span><span class="itool">n8n + Gmail + Sheets</span></div><div class="idesc">n8n monitors your inbox. Every client email gets logged to a Sheets row — date, subject, sender. Never lose track of a conversation or miss a follow-up again.</div><div class="isave">↩ saves ~1 hr/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-request testimonials 7 days after project delivery</span><span class="itool">n8n + Google Forms</span></div><div class="idesc">When a project is marked "Complete" in Sheets, n8n waits 7 days then sends a short testimonial form. Collect social proof on autopilot, consistently.</div><div class="isave">↩ saves ~1 hr/week</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── CATEGORY 4: PRODUCTIVITY ── -->
+  <div class="cat"><div class="cat-icon">⚡</div><div><div class="cat-title">Personal Productivity</div><div class="cat-sub">5 tasks</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-create your daily task list every morning</span><span class="itool">n8n + Notion</span></div><div class="idesc">Every morning at 7am, n8n creates a fresh Notion page with your recurring task template pre-filled. Wake up to a ready-made plan. Never start from a blank page again.</div><div class="isave">↩ saves ~30 min/day</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Summarise long emails with AI in 10 seconds</span><span class="itool">n8n + ChatGPT + Gmail</span></div><div class="idesc">Forward any long email to a special address. n8n sends it to ChatGPT which replies with a 3-bullet summary. Never read a wall of text again.</div><div class="isave">↩ saves ~1 hr/day</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Auto-log your daily wins to a Notion journal</span><span class="itool">n8n + Notion + Telegram</span></div><div class="idesc">Every night at 9pm, n8n sends you a Telegram message asking "What did you win today?" You reply. It logs to Notion automatically. Your builder diary, hands-free.</div><div class="isave">↩ saves ~20 min/day</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Get an AI weekly review of your progress every Sunday</span><span class="itool">n8n + ChatGPT + Sheets</span></div><div class="idesc">Every Sunday, n8n reads your weekly log from Sheets, sends it to ChatGPT, and emails you a "What you achieved + what to focus on next week" report. Your AI coach.</div><div class="isave">↩ saves ~1 hr/week</div></div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="itop"><span class="iname">Save any article or resource to Notion in one click</span><span class="itool">Notion Web Clipper</span></div><div class="idesc">Install the free Notion Web Clipper browser extension. One click saves any article, tweet, or webpage to your knowledge base. Your second brain, built automatically.</div><div class="isave">↩ saves ~30 min/day</div></div>
+  </div>
+
+  <div class="divider" style="margin:28px 0 16px;"></div>
+
+  <!-- DONE MESSAGE -->
+  <div class="done-msg" id="done-msg">
+    <div style="font-size:28px;margin-bottom:8px;">🎉</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">You've automated everything.</div>
+    <p style="font-size:13px;color:var(--muted);">You're now running like a one-person agency. The next step? Sell this system to local businesses. Comment <span style="color:var(--blue);font-weight:600;">AGENT</span> on Sailesh's latest LinkedIn post to get the full client pitch kit.</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">want more free resources?</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span><br>on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 16px;">Every carousel post comes with a free resource. Comment the keyword and it lands in your DMs instantly.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#AIAgents</span>
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#Automation</span>
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#BuilderInPublic</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Builder in Public · Karachi</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. If this helped, tag @Sailesh Prem on LinkedIn.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+
+<script>
+  const TOTAL = 20;
+  function toggle(el){ el.classList.toggle('done'); update(); }
+  function update(){
+    const done = document.querySelectorAll('.item.done').length;
+    const pct = (done/TOTAL)*100;
+    document.getElementById('prog-fill').style.width = pct+'%';
+    document.getElementById('prog-txt').textContent = done+' / '+TOTAL;
+    document.getElementById('hrs').textContent = done > 0 ? Math.round((done/TOTAL)*20)+'+' : '20+';
+    document.getElementById('done-msg').style.display = done===TOTAL ? 'block' : 'none';
+    const states=[]; document.querySelectorAll('.item').forEach((el,i)=>states[i]=el.classList.contains('done'));
+    try{localStorage.setItem('ack','1');localStorage.setItem('ac',JSON.stringify(states));}catch(e){}
+  }
+  function resetAll(){ document.querySelectorAll('.item').forEach(el=>el.classList.remove('done')); update(); }
+  try{
+    const s=JSON.parse(localStorage.getItem('ac')||'[]');
+    document.querySelectorAll('.item').forEach((el,i)=>{ if(s[i]) el.classList.add('done'); });
+    update();
+  }catch(e){}
+</script>
+</body>
+</html>
