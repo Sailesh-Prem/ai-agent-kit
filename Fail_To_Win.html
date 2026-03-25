@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Failure to First Client Guide · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:460px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+section{padding:28px 0;}
+.slabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.slabel::before{content:'';display:inline-block;width:24px;height:2px;background:var(--blue);border-radius:1px;}
+.stitle{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:18px;line-height:1.2;}
+.stitle span{color:var(--blue);}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:12px 0;}
+
+/* failure card */
+.fail{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.18);border-radius:16px;padding:22px 20px;margin-bottom:14px;position:relative;overflow:hidden;}
+.fail::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--red);border-radius:2px;}
+.fail-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.fail-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--red);}
+.fail-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);}
+.fail-body{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;}
+.fail-lesson{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.55;}
+.fail-lesson strong{color:var(--text);}
+.fail-lesson span{color:var(--muted);}
+
+/* fix card */
+.fix{background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:22px 20px;margin-bottom:14px;position:relative;overflow:hidden;}
+.fix::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--blue);border-radius:2px;}
+.fix-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--blue);margin-bottom:4px;}
+.fix-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);margin-bottom:8px;}
+.fix-body{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* week plan */
+.week{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;background:rgba(255,255,255,0.025);border:1px solid rgba(41,121,255,0.08);border-radius:12px;margin-bottom:10px;}
+.week-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.1em;min-width:52px;margin-top:2px;text-transform:uppercase;}
+.week-body{flex:1;}
+.week-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px;}
+.week-desc{font-size:12px;color:var(--muted);line-height:1.55;}
+.week-tasks{margin-top:8px;display:flex;flex-direction:column;gap:4px;}
+.task{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:6px;line-height:1.4;}
+.task::before{content:'→';color:var(--blue);flex-shrink:0;font-family:'DM Mono',monospace;font-size:11px;margin-top:1px;}
+
+.tag{display:inline-block;border:1px solid rgba(41,121,255,0.35);color:var(--blue);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;border-radius:4px;padding:3px 8px;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:32px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Honest Story</div>
+    <h1>Failure to <span>First Client</span><br>— The Real Guide</h1>
+    <p class="sub">3 failures, 3 fixes, and a week-by-week plan to land your first paid AI client in Pakistan.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- THE 3 FAILURES -->
+  <section>
+    <div class="slabel">what went wrong first</div>
+    <div class="stitle">The 3 <span>Failures</span> (Unfiltered)</div>
+
+    <div class="fail">
+      <div class="fail-head"><span class="fail-num">Failure 01</span></div>
+      <div class="fail-title">Tried to learn everything at once</div>
+      <div class="fail-body">Spent 3 weeks with 14 browser tabs open — n8n, Python, Make.com, Zapier, ChatGPT API. Consumed everything. Built nothing. Complete burnout by week 3.</div>
+      <div class="fail-lesson"><strong>The hard lesson:</strong> <span>Learning without a project is just procrastination with extra steps. You don't need to understand everything. You need to ship one thing.</span></div>
+    </div>
+
+    <div class="fail">
+      <div class="fail-head"><span class="fail-num">Failure 02</span></div>
+      <div class="fail-title">Built something nobody asked for</div>
+      <div class="fail-body">Spent 2 weeks building an AI content repurposing bot. Posted about it. Zero responses. Not because the tool was bad — because I never validated the problem first. Classic mistake.</div>
+      <div class="fail-lesson"><strong>The hard lesson:</strong> <span>Find the problem before you build the solution. Ask 5 real people what wastes their time. Then build that. In that order. Always.</span></div>
+    </div>
+
+    <div class="fail">
+      <div class="fail-head"><span class="fail-num">Failure 03</span></div>
+      <div class="fail-title">Was afraid to charge anyone</div>
+      <div class="fail-body">Did free work for 3 clients thinking it would lead to paid referrals. It didn't. Free work attracts people who don't value the work. One month of effort, zero revenue, zero referrals.</div>
+      <div class="fail-lesson"><strong>The hard lesson:</strong> <span>Price signals value. The client paying PKR 10,000 respects your time more than the one you helped free for a month. Charge from day one.</span></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- THE 3 FIXES -->
+  <section>
+    <div class="slabel">what actually changed</div>
+    <div class="stitle">The 3 <span>Decisions</span> That Fixed It</div>
+
+    <div class="fix">
+      <div class="fix-num">Fix 01 — One Tool Only</div>
+      <div class="fix-title">Chose n8n. Deleted everything else.</div>
+      <div class="fix-body">Unsubscribed from every other tool newsletter. Closed every other tab. Spent 2 weeks doing nothing but n8n. Mastery of one tool beats awareness of ten every single time.</div>
+    </div>
+
+    <div class="fix">
+      <div class="fix-num">Fix 02 — Problem Before Product</div>
+      <div class="fix-title">Asked 5 local business owners one question.</div>
+      <div class="fix-body">"What task wastes the most of your time every week?" Every single one mentioned customer enquiries on WhatsApp. That answer became my first product. I built for a confirmed problem, not a guessed one.</div>
+    </div>
+
+    <div class="fix">
+      <div class="fix-num">Fix 03 — Free Demo, Not Free Work</div>
+      <div class="fix-title">Offered to build a demo. Not to work for free.</div>
+      <div class="fix-body">The demo takes 2 hours to build. It closes clients in 24 hours. Free work takes weeks and closes nobody. Offer to show them what it looks like for their specific business — then charge for the real thing.</div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WEEK BY WEEK PLAN -->
+  <section>
+    <div class="slabel">the action plan</div>
+    <div class="stitle">Week by Week to <span>First Client</span></div>
+
+    <div class="week">
+      <span class="week-num">Week 1</span>
+      <div class="week-body">
+        <div class="week-title">Pick your tool and your niche</div>
+        <div class="week-desc">One tool. One type of business to serve. Nothing else.</div>
+        <div class="week-tasks">
+          <div class="task">Sign up for n8n free cloud account</div>
+          <div class="task">Pick one local business type: restaurant, salon, clinic, or coaching</div>
+          <div class="task">Find 10 of that business type on Instagram or Google Maps in your city</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="week">
+      <span class="week-num">Week 2</span>
+      <div class="week-body">
+        <div class="week-title">Validate the problem, build the solution</div>
+        <div class="week-desc">DM 5 of the businesses. Ask one question. Build from the answer.</div>
+        <div class="week-tasks">
+          <div class="task">Send the permission opener script to 5 prospects</div>
+          <div class="task">Ask: "What customer question do you answer most on WhatsApp?"</div>
+          <div class="task">Build one simple FAQ bot using the answers you get</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="week">
+      <span class="week-num">Week 3</span>
+      <div class="week-body">
+        <div class="week-title">Send demos, collect your first yes</div>
+        <div class="week-desc">A working demo closes more than any pitch deck ever will.</div>
+        <div class="week-tasks">
+          <div class="task">Build a personalised demo for each interested prospect</div>
+          <div class="task">Send the free demo offer script — no pitch, no price yet</div>
+          <div class="task">Follow up at 48 hours using the follow-up script</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="week">
+      <span class="week-num">Week 4</span>
+      <div class="week-body">
+        <div class="week-title">Close, deliver, and collect proof</div>
+        <div class="week-desc">Your first paid client. Then your first testimonial.</div>
+        <div class="week-tasks">
+          <div class="task">Quote PKR 8,000–15,000 setup + PKR 3,000/month retainer</div>
+          <div class="task">Deliver in 3–4 days. Over-communicate every step.</div>
+          <div class="task">7 days after delivery, ask for a testimonial. This becomes your next client's social proof.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ — natural placement -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">if you want structured guidance</div>
+    <div class="aaghaz-title">The institute that teaches you to<br><span>build AI agents as a business</span></div>
+    <div class="aaghaz-body">
+      The plan above works — but it's easier when you're surrounded by people doing the same thing. I came across <strong style="color:var(--text);">Aaghaz AI</strong>, Asia's first AI startup institute, which runs a 12-week program specifically for building and monetising AI agents.<br><br>
+      What stands out is that it's built for people in Pakistan who want to sell AI services locally and globally — not just learn about AI in theory. If you want a structured path alongside a community, it's worth looking at.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 14px;">Comment the keyword on any carousel post and the resource lands in your DMs instantly.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="tag">#AIAgents</span>
+      <span class="tag">#Pakistan</span>
+      <span class="tag">#Freelance</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
