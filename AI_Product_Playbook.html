@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Product Playbook · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-top:4px;}
+
+section{padding:28px 0;}
+.slabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.slabel::before{content:'';display:inline-block;width:24px;height:2px;background:var(--blue);border-radius:1px;}
+.stitle{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:18px;line-height:1.2;}
+.stitle span{color:var(--blue);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:12px 0;}
+
+/* product card */
+.product{background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;overflow:hidden;margin-bottom:20px;position:relative;}
+.product::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.25),transparent);}
+.product-header{padding:20px 22px 16px;border-bottom:1px solid rgba(41,121,255,0.08);display:flex;align-items:center;gap:14px;}
+.product-icon{width:48px;height:48px;border-radius:12px;background:rgba(41,121,255,0.12);border:1px solid rgba(41,121,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.product-meta{flex:1;}
+.product-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:2px;}
+.product-name{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--text);}
+.product-niche{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
+.product-price{text-align:right;}
+.price-main{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--green);}
+.price-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+.product-body{padding:18px 22px;display:flex;flex-direction:column;gap:14px;}
+.product-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.product-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.product-detail{background:rgba(255,255,255,0.02);border:1px solid rgba(41,121,255,0.08);border-radius:8px;padding:10px 12px;}
+.detail-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px;}
+.detail-val{font-size:12px;color:var(--text);line-height:1.4;}
+.product-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.tool-tag{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue);border:1px solid rgba(41,121,255,0.25);border-radius:4px;padding:3px 8px;}
+.pitch-line{background:rgba(41,121,255,0.07);border:1px solid rgba(41,121,255,0.15);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.6;font-style:italic;}
+.pitch-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:6px;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:32px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}.stats .stat:last-child{grid-column:span 2;}.product-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · No Sign-Up</div>
+    <h1>The <span>AI Product</span><br>Playbook</h1>
+    <p class="sub">5 AI products you can package and sell in Pakistan today — with names, prices, timelines, and tools included.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Sellable Products</div></div>
+    <div class="stat"><div class="stat-n">3 Days</div><div class="stat-l">Avg Delivery</div></div>
+    <div class="stat"><div class="stat-n">PKR 0</div><div class="stat-l">Tool Cost</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PRODUCTS -->
+  <section>
+    <div class="slabel">your product menu</div>
+    <div class="stitle">5 AI Products to <span>Sell Right Now</span></div>
+
+    <!-- Product 1 -->
+    <div class="product">
+      <div class="product-header">
+        <div class="product-icon">🤖</div>
+        <div class="product-meta">
+          <div class="product-num">Product 01</div>
+          <div class="product-name">WhatsApp FAQ Bot</div>
+          <div class="product-niche">Restaurants · Clinics · Salons · Coaching</div>
+        </div>
+        <div class="product-price">
+          <div class="price-main">PKR 12,000</div>
+          <div class="price-sub">+ 3,000/month</div>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-desc">A 24/7 WhatsApp assistant that answers customer questions automatically — menu, pricing, hours, bookings. The business owner never touches it. You build it once and maintain it monthly.</div>
+        <div class="product-row">
+          <div class="product-detail"><div class="detail-label">Delivery Time</div><div class="detail-val">3–4 days</div></div>
+          <div class="product-detail"><div class="detail-label">Best Client</div><div class="detail-val">Any local business with WhatsApp enquiries</div></div>
+        </div>
+        <div>
+          <div class="detail-label" style="margin-bottom:6px;">Tools</div>
+          <div class="product-tools"><span class="tool-tag">n8n</span><span class="tool-tag">Twilio</span><span class="tool-tag">ChatGPT API</span><span class="tool-tag">Google Sheets</span></div>
+        </div>
+        <div>
+          <div class="pitch-label">Your one-line pitch</div>
+          <div class="pitch-line">"I build WhatsApp bots for [niche] businesses in [city] that answer customer questions 24/7 — so you never miss an enquiry again."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product">
+      <div class="product-header">
+        <div class="product-icon">✍️</div>
+        <div class="product-meta">
+          <div class="product-num">Product 02</div>
+          <div class="product-name">Content Repurposing Agent</div>
+          <div class="product-niche">Coaches · Consultants · Personal Brands</div>
+        </div>
+        <div class="product-price">
+          <div class="price-main">PKR 20,000</div>
+          <div class="price-sub">per month retainer</div>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-desc">Takes one long video or podcast per week and automatically produces 5 LinkedIn posts, 3 tweet threads, and a WhatsApp broadcast message. Client records once, you deliver everywhere.</div>
+        <div class="product-row">
+          <div class="product-detail"><div class="detail-label">Delivery Time</div><div class="detail-val">24 hours per batch</div></div>
+          <div class="product-detail"><div class="detail-label">Best Client</div><div class="detail-val">Coaches and consultants posting on LinkedIn</div></div>
+        </div>
+        <div>
+          <div class="detail-label" style="margin-bottom:6px;">Tools</div>
+          <div class="product-tools"><span class="tool-tag">n8n</span><span class="tool-tag">ChatGPT API</span><span class="tool-tag">YouTube API</span><span class="tool-tag">Notion</span></div>
+        </div>
+        <div>
+          <div class="pitch-label">Your one-line pitch</div>
+          <div class="pitch-line">"You record once. I turn it into a week of content across LinkedIn, Twitter, and WhatsApp — automatically, every week."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="product">
+      <div class="product-header">
+        <div class="product-icon">🎯</div>
+        <div class="product-meta">
+          <div class="product-num">Product 03</div>
+          <div class="product-name">Lead Generation Automation</div>
+          <div class="product-niche">Agencies · Freelancers · B2B Services</div>
+        </div>
+        <div class="product-price">
+          <div class="price-main">PKR 25,000</div>
+          <div class="price-sub">+ 5,000/month</div>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-desc">Finds prospects, pulls their contact info, writes personalised outreach, and sends it automatically. Client wakes up to a list of warm leads every morning without lifting a finger.</div>
+        <div class="product-row">
+          <div class="product-detail"><div class="detail-label">Delivery Time</div><div class="detail-val">5–7 days</div></div>
+          <div class="product-detail"><div class="detail-label">Best Client</div><div class="detail-val">Anyone selling B2B services locally</div></div>
+        </div>
+        <div>
+          <div class="detail-label" style="margin-bottom:6px;">Tools</div>
+          <div class="product-tools"><span class="tool-tag">n8n</span><span class="tool-tag">Google Maps API</span><span class="tool-tag">Gmail</span><span class="tool-tag">ChatGPT</span><span class="tool-tag">Sheets</span></div>
+        </div>
+        <div>
+          <div class="pitch-label">Your one-line pitch</div>
+          <div class="pitch-line">"I build a system that finds your ideal clients, writes them a personalised email, and sends it automatically — every single day."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="product">
+      <div class="product-header">
+        <div class="product-icon">📊</div>
+        <div class="product-meta">
+          <div class="product-num">Product 04</div>
+          <div class="product-name">Automated Weekly Report</div>
+          <div class="product-niche">E-commerce · Small Businesses · Startups</div>
+        </div>
+        <div class="product-price">
+          <div class="price-main">PKR 8,000</div>
+          <div class="price-sub">per month retainer</div>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-desc">Pulls sales data, social stats, and operational numbers every week and emails the business owner a clean summary with AI-written insights. No spreadsheets. No manual work.</div>
+        <div class="product-row">
+          <div class="product-detail"><div class="detail-label">Delivery Time</div><div class="detail-val">2–3 days setup</div></div>
+          <div class="product-detail"><div class="detail-label">Best Client</div><div class="detail-val">Small business owners drowning in data</div></div>
+        </div>
+        <div>
+          <div class="detail-label" style="margin-bottom:6px;">Tools</div>
+          <div class="product-tools"><span class="tool-tag">n8n</span><span class="tool-tag">Google Sheets</span><span class="tool-tag">Gmail</span><span class="tool-tag">ChatGPT</span></div>
+        </div>
+        <div>
+          <div class="pitch-label">Your one-line pitch</div>
+          <div class="pitch-line">"Every Monday morning you get a clean summary of your business performance — automatically, in your inbox, no action needed."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product">
+      <div class="product-header">
+        <div class="product-icon">📅</div>
+        <div class="product-meta">
+          <div class="product-num">Product 05</div>
+          <div class="product-name">AI Booking and Receptionist</div>
+          <div class="product-niche">Clinics · Tutors · Beauty Salons · Coaches</div>
+        </div>
+        <div class="product-price">
+          <div class="price-main">PKR 18,000</div>
+          <div class="price-sub">+ 4,000/month</div>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-desc">A WhatsApp bot that qualifies leads, checks the calendar, and books appointments automatically — 24/7. The business owner only shows up for the actual appointment.</div>
+        <div class="product-row">
+          <div class="product-detail"><div class="detail-label">Delivery Time</div><div class="detail-val">4–5 days</div></div>
+          <div class="product-detail"><div class="detail-label">Best Client</div><div class="detail-val">Service businesses with appointment bookings</div></div>
+        </div>
+        <div>
+          <div class="detail-label" style="margin-bottom:6px;">Tools</div>
+          <div class="product-tools"><span class="tool-tag">n8n</span><span class="tool-tag">Twilio</span><span class="tool-tag">Google Calendar</span><span class="tool-tag">ChatGPT</span></div>
+        </div>
+        <div>
+          <div class="pitch-label">Your one-line pitch</div>
+          <div class="pitch-line">"Your WhatsApp handles all bookings automatically. You only show up for the appointment. No back and forth, no missed clients."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want to build these faster?</div>
+    <div class="aaghaz-title">Where I'm learning to turn these<br><span>products into a real business</span></div>
+    <div class="aaghaz-body">
+      Building these products is one thing. Packaging, pricing, and selling them consistently is another. I've been following <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — specifically because their 12-week program covers both the technical build and the business model behind each product.<br><br>
+      It's designed for people in Pakistan who want to go from learning AI to actually monetising it. If you're serious about turning one of these 5 products into a real income stream, it's worth a look.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 14px;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#AIAgents</span>
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#Pakistan</span>
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#Freelance</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
