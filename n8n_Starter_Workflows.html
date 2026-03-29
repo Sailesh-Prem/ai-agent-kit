@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>n8n Starter Workflow Kit · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-top:4px;}
+section{padding:28px 0;}
+.slabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.slabel::before{content:'';display:inline-block;width:24px;height:2px;background:var(--blue);border-radius:1px;}
+.stitle{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:18px;line-height:1.2;}
+.stitle span{color:var(--blue);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:12px 0;}
+
+/* workflow card */
+.wf-card{background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;overflow:hidden;margin-bottom:24px;position:relative;}
+.wf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.25),transparent);}
+.wf-header{padding:20px 22px 16px;border-bottom:1px solid rgba(41,121,255,0.08);display:flex;align-items:center;gap:14px;}
+.wf-icon{width:48px;height:48px;border-radius:12px;background:rgba(41,121,255,0.12);border:1px solid rgba(41,121,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.wf-meta{flex:1;}
+.wf-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:2px;}
+.wf-name{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--text);}
+.wf-sell{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);margin-top:2px;}
+.wf-body{padding:18px 22px;display:flex;flex-direction:column;gap:16px;}
+.wf-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* node steps */
+.node-steps{display:flex;flex-direction:column;gap:0;}
+.ns-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--blue);margin-bottom:10px;}
+.ns-item{display:flex;align-items:flex-start;gap:12px;position:relative;padding-bottom:14px;}
+.ns-item:last-child{padding-bottom:0;}
+.ns-left{display:flex;flex-direction:column;align-items:center;}
+.ns-circle{width:26px;height:26px;border-radius:50%;background:rgba(41,121,255,0.12);border:1px solid rgba(41,121,255,0.25);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);flex-shrink:0;}
+.ns-line{width:1px;flex:1;min-height:12px;background:linear-gradient(180deg,rgba(41,121,255,0.2),transparent);margin-top:3px;}
+.ns-item:last-child .ns-line{display:none;}
+.ns-content{padding-top:3px;flex:1;}
+.ns-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.ns-node{font-family:'DM Mono',monospace;font-size:9px;color:var(--blue);margin-bottom:3px;}
+.ns-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+
+.wf-tools{display:flex;gap:6px;flex-wrap:wrap;}
+.tool-tag{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue);border:1px solid rgba(41,121,255,0.25);border-radius:4px;padding:3px 8px;}
+.time-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--green);border:1px solid rgba(34,197,94,0.25);border-radius:4px;padding:3px 8px;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:32px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}.stats .stat:last-child{grid-column:span 2;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · No Sign-Up</div>
+    <h1>The <span>n8n Starter</span><br>Workflow Kit</h1>
+    <p class="sub">3 ready-to-build AI workflows — each mapped node by node so you can ship in under 2 hours.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Workflows</div></div>
+    <div class="stat"><div class="stat-n">2 hrs</div><div class="stat-l">To Build Each</div></div>
+    <div class="stat"><div class="stat-n">PKR 0</div><div class="stat-l">Tool Cost</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="slabel">the 3 workflows</div>
+    <div class="stitle">Pick One. <span>Build It This Weekend.</span></div>
+
+    <!-- Workflow 1 -->
+    <div class="wf-card">
+      <div class="wf-header">
+        <div class="wf-icon">🤖</div>
+        <div class="wf-meta">
+          <div class="wf-num">Workflow 01</div>
+          <div class="wf-name">WhatsApp FAQ Bot</div>
+          <div class="wf-sell">Sellable for PKR 12,000 setup + 3,000/month</div>
+        </div>
+      </div>
+      <div class="wf-body">
+        <div class="wf-desc">Automatically answers customer WhatsApp messages 24/7 using the business's own FAQ. The business owner never touches it after setup.</div>
+        <div class="node-steps">
+          <div class="ns-label">Node-by-node build guide</div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">1</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Webhook Node</div><div class="ns-title">Receive the WhatsApp message</div><div class="ns-desc">Twilio sends a POST request to your n8n webhook URL every time a customer messages. Set up a free Twilio sandbox number to test.</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">2</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Set Node</div><div class="ns-title">Extract the message text</div><div class="ns-desc">Pull the customer's message from the Twilio webhook payload using <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);">{{ $json.Body }}</code></div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">3</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">OpenAI Node</div><div class="ns-title">Ask ChatGPT to write the reply</div><div class="ns-desc">System prompt: "You are the assistant for [Business Name]. Only answer using this information: [paste FAQ here]. Be concise and friendly." Pass the customer message as the user input.</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">4</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">HTTP Request Node</div><div class="ns-title">Send the reply via Twilio</div><div class="ns-desc">POST to Twilio's Messages API with the GPT reply as the body. The customer receives it on WhatsApp within 3 seconds.</div></div>
+          </div>
+        </div>
+        <div class="wf-tools">
+          <span class="tool-tag">n8n</span><span class="tool-tag">Twilio Free</span><span class="tool-tag">OpenAI</span><span class="tool-tag">Google Sheets</span>
+          <span class="time-tag">Build time: 1.5 hrs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow 2 -->
+    <div class="wf-card">
+      <div class="wf-header">
+        <div class="wf-icon">✍️</div>
+        <div class="wf-meta">
+          <div class="wf-num">Workflow 02</div>
+          <div class="wf-name">Content Repurposing Agent</div>
+          <div class="wf-sell">Sellable for PKR 20,000/month retainer</div>
+        </div>
+      </div>
+      <div class="wf-body">
+        <div class="wf-desc">Takes a YouTube video link and automatically produces 5 LinkedIn posts, a tweet thread, and a WhatsApp broadcast message. Client submits a link, gets a week of content.</div>
+        <div class="node-steps">
+          <div class="ns-label">Node-by-node build guide</div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">1</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Webhook Node</div><div class="ns-title">Receive YouTube URL from client</div><div class="ns-desc">Client submits a Google Form with the YouTube link. n8n webhook triggers instantly on form submission.</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">2</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">HTTP Request Node</div><div class="ns-title">Fetch the video transcript</div><div class="ns-desc">Call the free YouTube Transcript API with the video ID. Returns the full spoken text of the video as plain text.</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">3</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">OpenAI Node</div><div class="ns-title">Repurpose into 5 formats</div><div class="ns-desc">Prompt: "From this transcript, write: 1. A LinkedIn carousel hook (2 lines). 2. A LinkedIn caption (150 words). 3. A 5-tweet thread. 4. A WhatsApp broadcast (80 words). 5. An Instagram caption. Transcript: [transcript]"</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">4</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Notion Node</div><div class="ns-title">Create a new page with all 5 pieces</div><div class="ns-desc">n8n creates a new Notion page in the client's workspace with each content piece in a separate section. Client reviews and posts. You never write a word.</div></div>
+          </div>
+        </div>
+        <div class="wf-tools">
+          <span class="tool-tag">n8n</span><span class="tool-tag">YouTube API</span><span class="tool-tag">OpenAI</span><span class="tool-tag">Notion</span><span class="tool-tag">Google Forms</span>
+          <span class="time-tag">Build time: 2 hrs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow 3 -->
+    <div class="wf-card">
+      <div class="wf-header">
+        <div class="wf-icon">🎯</div>
+        <div class="wf-meta">
+          <div class="wf-num">Workflow 03</div>
+          <div class="wf-name">Lead Gen Email Automator</div>
+          <div class="wf-sell">Sellable for PKR 25,000 setup + 5,000/month</div>
+        </div>
+      </div>
+      <div class="wf-body">
+        <div class="wf-desc">Takes a list of prospect names and businesses, writes personalised cold emails using AI, and sends them via Gmail automatically. Client adds rows to a sheet. Emails go out on their own.</div>
+        <div class="node-steps">
+          <div class="ns-label">Node-by-node build guide</div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">1</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Google Sheets Trigger</div><div class="ns-title">Watch for new rows in the prospect sheet</div><div class="ns-desc">Every time a new row is added to the "Prospects" sheet with a name, business, and email, n8n triggers the workflow automatically.</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">2</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">OpenAI Node</div><div class="ns-title">Write a personalised 3-line cold email</div><div class="ns-desc">Prompt: "Write a 3-line cold email to [Name] at [Business]. Mention their business type. Offer to build a free AI demo for them. Sound human, not salesy. Sign off as Sailesh."</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">3</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Gmail Node</div><div class="ns-title">Send the email from your Gmail</div><div class="ns-desc">n8n sends the GPT-written email from your connected Gmail account to the prospect's email address. Subject line: "Quick idea for [Business Name]"</div></div>
+          </div>
+          <div class="ns-item">
+            <div class="ns-left"><div class="ns-circle">4</div><div class="ns-line"></div></div>
+            <div class="ns-content"><div class="ns-node">Google Sheets Node</div><div class="ns-title">Log the send status back to the sheet</div><div class="ns-desc">Update the row with "Sent" status and the timestamp. Now you have a live CRM that tracks every outreach automatically.</div></div>
+          </div>
+        </div>
+        <div class="wf-tools">
+          <span class="tool-tag">n8n</span><span class="tool-tag">Google Sheets</span><span class="tool-tag">OpenAI</span><span class="tool-tag">Gmail</span>
+          <span class="time-tag">Build time: 1.5 hrs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">ready to go beyond 3 workflows?</div>
+    <div class="aaghaz-title">The structured path to building<br><span>AI agents as a full business</span></div>
+    <div class="aaghaz-body">
+      These 3 workflows are your starting point. But building a sustainable income from AI agents requires more than tutorials — it requires a system, a community, and real mentorship.<br><br>
+      <strong style="color:var(--text);">Aaghaz AI</strong> is Asia's first AI startup institute. Their 12-week program teaches you to build agentic workflows, package them as products, and sell them to clients — with 1:1 mentorship and 20+ expert sessions. Built specifically for Pakistan.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 14px;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#n8n</span>
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#AIAutomation</span>
+      <span style="border:1px solid rgba(41,121,255,0.25);border-radius:6px;padding:4px 12px;font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);">#Pakistan</span>
+    </div>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
