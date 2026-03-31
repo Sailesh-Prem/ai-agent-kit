@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Ready Checklist · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+.prog-wrap{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 20px;margin-bottom:36px;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.prog-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+.prog-count{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--blue);}
+.prog-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),rgba(41,121,255,0.55));border-radius:3px;transition:width 0.4s ease;width:0%;}
+.reset-btn{background:transparent;border:1px solid rgba(41,121,255,0.2);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.reset-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+section{padding:20px 0;}
+.slabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.slabel::before{content:'';display:inline-block;width:24px;height:2px;background:var(--blue);border-radius:1px;}
+.stitle{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px;line-height:1.2;}
+.stitle span{color:var(--blue);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:16px 0;}
+
+/* check item */
+.item{display:flex;align-items:flex-start;gap:13px;padding:14px 16px;background:rgba(255,255,255,0.025);border:1px solid rgba(41,121,255,0.08);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.item:hover{border-color:rgba(41,121,255,0.2);background:rgba(41,121,255,0.04);}
+.item.done{background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.15);}
+.cb{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(41,121,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.2s;}
+.item.done .cb{background:var(--green);border-color:var(--green);}
+.ck{opacity:0;transition:opacity 0.2s;}
+.item.done .ck{opacity:1;}
+.ib{flex:1;}
+.iname{font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);line-height:1.4;}
+.item.done .iname{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(107,114,128,0.35);}
+.idesc{font-size:11px;color:var(--muted);line-height:1.55;margin-top:3px;}
+.ibadge{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;border-radius:4px;padding:2px 7px;margin-top:5px;display:inline-block;}
+.ibadge-blue{color:var(--blue);border:1px solid rgba(41,121,255,0.25);}
+.ibadge-green{color:var(--green);border:1px solid rgba(34,197,94,0.25);}
+.ibadge-yellow{color:var(--yellow);border:1px solid rgba(245,158,11,0.25);}
+
+/* phase header */
+.phase{display:flex;align-items:center;gap:10px;margin:24px 0 12px;}
+.phase-num{width:32px;height:32px;border-radius:50%;background:var(--blue-dim);border:1px solid var(--blue-glow);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);flex-shrink:0;}
+.phase-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;}
+.phase-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:1px;}
+
+/* price card */
+.price-card{background:var(--glass);border:1px solid var(--blue-glow);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.price-name{font-size:13px;font-weight:600;color:var(--text);}
+.price-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.price-amount{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--green);white-space:nowrap;}
+
+/* done msg */
+.done-msg{display:none;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:24px;text-align:center;margin-bottom:28px;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:28px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Tick as You Go</div>
+    <h1>The <span>Client Ready</span><br>Checklist</h1>
+    <p class="sub">Everything you need to land your first paid AI client — in the exact order you need to do it.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span class="prog-label">your readiness</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="prog-count" id="prog-txt">0 / 20</span>
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase"><div class="phase-num">1</div><div><div class="phase-title">Build Your Foundation</div><div class="phase-sub">Do this before sending a single DM</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Pick ONE service to sell — not three, not five</div><div class="idesc">WhatsApp bot, content agent, or lead gen automator. One only. You can expand after your first 3 clients.</div><div class="ibadge ibadge-blue">decision</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Pick ONE type of business to target first</div><div class="idesc">Restaurant, clinic, salon, or coaching. One niche = one type of problem = one demo that works for everyone.</div><div class="ibadge ibadge-blue">decision</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Set up your n8n free cloud account</div><div class="idesc">Go to n8n.io → Start for free. No credit card. This is your workshop. Takes 2 minutes.</div><div class="ibadge ibadge-green">setup</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Build one working demo — even a basic version</div><div class="idesc">Build the simplest version of your chosen service. It doesn't need to be perfect. It needs to work and be demonstrable.</div><div class="ibadge ibadge-green">build</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Write your one-line pitch</div><div class="idesc">"I build [service] for [niche] in [city] so they can [outcome]. Takes [X] days." Write this down. Say it out loud. Know it cold.</div><div class="ibadge ibadge-blue">messaging</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PHASE 2 -->
+  <div class="phase"><div class="phase-num">2</div><div><div class="phase-title">Find Your First 5 Prospects</div><div class="phase-sub">Takes 30 minutes max</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Search your niche on Instagram or Google Maps</div><div class="idesc">Type "salon Karachi" or "restaurant Lahore" — you'll find 50 prospects in 5 minutes. Screenshot their contact info.</div><div class="ibadge ibadge-green">prospecting</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Pick 5 specific businesses — not a category</div><div class="idesc">Name them. Find their WhatsApp or Instagram DM. Personalisation requires specifics. You need actual names, not a list.</div><div class="ibadge ibadge-green">prospecting</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Research each business before messaging</div><div class="idesc">Check their Instagram. Notice what they post about. Look for any complaints in reviews. This takes 3 minutes per business and makes your DM 10x more personal.</div><div class="ibadge ibadge-blue">research</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Save your DM scripts to your phone notes</div><div class="idesc">Copy the 5 scripts from the Cold DM Kit. Have them ready. When you're in the moment you don't want to write from scratch.</div><div class="ibadge ibadge-blue">prep</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PHASE 3 -->
+  <div class="phase"><div class="phase-num">3</div><div><div class="phase-title">Send the DMs</div><div class="phase-sub">The part everyone delays — do it now</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Send Script 01 — Permission Opener — to all 5</div><div class="idesc">Don't edit it too much. Send it today. The longer you wait, the harder it gets. Done is better than perfect here.</div><div class="ibadge ibadge-yellow">action</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Reply within 1 hour to anyone who responds</div><div class="idesc">Speed signals professionalism. Fast replies create momentum. Have Script 02 ready to paste the moment they say yes.</div><div class="ibadge ibadge-yellow">action</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Send 48hr follow-up to anyone who didn't reply</div><div class="idesc">Use Script 05. One follow-up only. Not pushy — just the scarcity nudge. This alone recovers 30% of dead leads.</div><div class="ibadge ibadge-yellow">action</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PHASE 4 -->
+  <div class="phase"><div class="phase-num">4</div><div><div class="phase-title">Close and Deliver</div><div class="phase-sub">Turn interest into invoices</div></div></div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Build a personalised demo for every interested prospect</div><div class="idesc">Use their business name in the bot. Their menu, their FAQ, their hours. Personalisation closes. Generic demos don't.</div><div class="ibadge ibadge-green">build</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Quote confidently using the price list below</div><div class="idesc">Don't hedge. Don't say "it depends." Give a clear number. If they push back, hold it for the first 3 clients then raise.</div><div class="ibadge ibadge-yellow">close</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Deliver in 3–4 days. Over-communicate every step.</div><div class="idesc">Send a progress update even if nothing changed. Clients who feel informed trust you more and refer you more.</div><div class="ibadge ibadge-green">deliver</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Ask for a testimonial 7 days after delivery</div><div class="idesc">"Would you mind writing 2–3 sentences about your experience with the bot? I want to share it on LinkedIn." Simple ask. High return. Your next client's first trust signal.</div><div class="ibadge ibadge-yellow">follow-up</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="iname">Post your result publicly on LinkedIn</div><div class="idesc">"I just delivered my first paid AI project for a [niche] in [city]. Here's what I built and what I learned." That post gets you the next client without any DMs.</div><div class="ibadge ibadge-blue">content</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PRICE REFERENCE -->
+  <section>
+    <div class="slabel">your starting prices</div>
+    <div class="stitle">Charge These. <span>Raise After 3 Clients.</span></div>
+    <div class="price-card"><div><div class="price-name">WhatsApp FAQ Bot</div><div class="price-sub">Setup one-time</div></div><div class="price-amount">PKR 12,000</div></div>
+    <div class="price-card"><div><div class="price-name">Monthly Maintenance</div><div class="price-sub">Per bot, per month</div></div><div class="price-amount">PKR 3,000</div></div>
+    <div class="price-card"><div><div class="price-name">Content Repurposing Agent</div><div class="price-sub">Monthly retainer</div></div><div class="price-amount">PKR 20,000</div></div>
+    <div class="price-card"><div><div class="price-name">Lead Gen Automation</div><div class="price-sub">Setup one-time</div></div><div class="price-amount">PKR 25,000</div></div>
+    <div class="price-card"><div><div class="price-name">AI Booking Receptionist</div><div class="price-sub">Setup one-time</div></div><div class="price-amount">PKR 18,000</div></div>
+  </section>
+
+  <!-- DONE MESSAGE -->
+  <div class="done-msg" id="done-msg">
+    <div style="font-size:28px;margin-bottom:8px;">🎉</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">You're client ready.</div>
+    <p style="font-size:13px;color:var(--muted);">Now go send the DM. The checklist is done. The only thing left is the send button.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want mentorship through this process?</div>
+    <div class="aaghaz-title">The structured program for turning<br><span>AI skills into a real income</span></div>
+    <div class="aaghaz-body">
+      This checklist works if you execute it. But having a mentor and a community watching you do it changes everything. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — runs a 12-week program with 1:1 mentorship, 20+ expert sessions, and a full curriculum covering AI agents, automation, and how to sell both.<br><br>
+      Built for Pakistan. Focused on real income, not just certificates.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 14px;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+
+<script>
+  const TOTAL=20;
+  function toggle(el){el.classList.toggle('done');update();}
+  function update(){
+    const done=document.querySelectorAll('.item.done').length;
+    document.getElementById('prog-fill').style.width=(done/TOTAL*100)+'%';
+    document.getElementById('prog-txt').textContent=done+' / '+TOTAL;
+    document.getElementById('done-msg').style.display=done===TOTAL?'block':'none';
+    const s=[];document.querySelectorAll('.item').forEach((el,i)=>s[i]=el.classList.contains('done'));
+    try{localStorage.setItem('crc',JSON.stringify(s));}catch(e){}
+  }
+  function resetAll(){document.querySelectorAll('.item').forEach(el=>el.classList.remove('done'));update();}
+  try{
+    const s=JSON.parse(localStorage.getItem('crc')||'[]');
+    document.querySelectorAll('.item').forEach((el,i)=>{if(s[i])el.classList.add('done');});
+    update();
+  }catch(e){}
+</script>
+</body>
+</html>
