@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Agent Roadmap · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:36px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-top:4px;}
+
+.prog-wrap{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 20px;margin-bottom:36px;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.prog-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+.prog-count{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--blue);}
+.prog-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),rgba(41,121,255,0.55));border-radius:3px;transition:width 0.4s ease;width:0%;}
+.reset-btn{background:transparent;border:1px solid rgba(41,121,255,0.2);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.reset-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* week section */
+.week-header{background:rgba(41,121,255,0.08);border:1px solid rgba(41,121,255,0.2);border-radius:12px;padding:16px 20px;margin:24px 0 12px;display:flex;align-items:center;gap:14px;}
+.week-badge{width:44px;height:44px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;color:#fff;text-transform:uppercase;font-weight:500;flex-shrink:0;letter-spacing:0.06em;}
+.week-info{flex:1;}
+.week-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);}
+.week-goal{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
+.week-outcome{font-family:'DM Mono',monospace;font-size:9px;color:var(--green);letter-spacing:0.08em;white-space:nowrap;}
+
+/* task item */
+.item{display:flex;align-items:flex-start;gap:13px;padding:13px 15px;background:rgba(255,255,255,0.025);border:1px solid rgba(41,121,255,0.08);border-radius:10px;margin-bottom:7px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.item:hover{border-color:rgba(41,121,255,0.2);background:rgba(41,121,255,0.04);}
+.item.done{background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.15);}
+.cb{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(41,121,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.2s;}
+.item.done .cb{background:var(--green);border-color:var(--green);}
+.ck{opacity:0;transition:opacity 0.2s;}
+.item.done .ck{opacity:1;}
+.ib{flex:1;}
+.day-tag{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:3px;}
+.iname{font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);line-height:1.4;}
+.item.done .iname{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(107,114,128,0.35);}
+.idesc{font-size:11px;color:var(--muted);line-height:1.55;margin-top:3px;}
+.itool{font-family:'DM Mono',monospace;font-size:8px;color:var(--blue);border:1px solid rgba(41,121,255,0.2);border-radius:3px;padding:2px 6px;margin-top:5px;display:inline-block;text-transform:uppercase;letter-spacing:0.08em;}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:12px 0;}
+
+/* done msg */
+.done-msg{display:none;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:24px;text-align:center;margin-bottom:28px;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:28px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}.stats .stat:last-child{grid-column:span 2;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Tick as You Go</div>
+    <h1>The <span>AI Agent</span><br>Roadmap</h1>
+    <p class="sub">4 weeks. Daily tasks. From zero knowledge to your first paying client — with no coding required.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Weeks</div></div>
+    <div class="stat"><div class="stat-n">28</div><div class="stat-l">Daily Tasks</div></div>
+    <div class="stat"><div class="stat-n">PKR 0</div><div class="stat-l">To Start</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span class="prog-label">your progress</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="prog-count" id="prog-txt">0 / 28</span>
+        <button class="reset-btn" onclick="resetAll()">Reset</button>
+      </div>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="week-header">
+    <div class="week-badge">Wk 1</div>
+    <div class="week-info">
+      <div class="week-title">Learn n8n Fundamentals</div>
+      <div class="week-goal">Build 3 simple workflows · break things · understand nodes</div>
+    </div>
+    <div class="week-outcome">→ 3 working flows</div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 1</div><div class="iname">Sign up for n8n free cloud</div><div class="idesc">Go to n8n.io → Start free. No credit card. Explore the interface for 30 minutes. Click every menu.</div><div class="itool">n8n free</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 2</div><div class="iname">Build Workflow 1 — Webhook to Gmail</div><div class="idesc">Trigger: manual webhook. Action: send yourself an email via Gmail. 3 nodes. Get comfortable with connecting nodes.</div><div class="itool">n8n + gmail</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 3</div><div class="iname">Build Workflow 2 — Webhook to ChatGPT to Google Sheets</div><div class="idesc">Input text → ChatGPT rewrites it → logs the result to Sheets. This is the core pattern behind almost every AI agent.</div><div class="itool">n8n + openai + sheets</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 4</div><div class="iname">Build Workflow 3 — Scheduled email summary</div><div class="idesc">Trigger: every day at 8am. Action: pull today's tasks from Sheets. ChatGPT formats them. Gmail sends the summary.</div><div class="itool">n8n schedule + sheets + gmail</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 5</div><div class="iname">Learn error handling — add an IF node</div><div class="idesc">Add a condition to one of your workflows. "If the email subject contains X, do Y. Otherwise do Z." This unlocks 80% of agent logic.</div><div class="itool">n8n if node</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 6-7</div><div class="iname">Break, fix, and document your 3 workflows</div><div class="idesc">Intentionally break something. Fix it. Write one paragraph explaining what each workflow does. This becomes your portfolio.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WEEK 2 -->
+  <div class="week-header">
+    <div class="week-badge">Wk 2</div>
+    <div class="week-info">
+      <div class="week-title">Find the Problem, Validate It</div>
+      <div class="week-goal">Talk to 5 real businesses · find a confirmed pain point · design your solution</div>
+    </div>
+    <div class="week-outcome">→ validated idea</div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 8</div><div class="iname">Pick your target niche</div><div class="idesc">Restaurant, salon, clinic, coaching, or e-commerce. One only. Google "most WhatsApp messages businesses get" in that niche.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 9</div><div class="iname">Find 10 real businesses on Instagram or Google Maps</div><div class="idesc">Search "[niche] [your city]". Screenshot names, Instagram handles, WhatsApp numbers. Real businesses. Not directories.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 10</div><div class="iname">Send 5 permission opener DMs</div><div class="idesc">Use Script 01 from the Cold DM Kit. Don't pitch. Just ask if you can share a quick idea. Send today, not tomorrow.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 11</div><div class="iname">Ask the one validation question</div><div class="idesc">To anyone who replies: "What's the most common question you answer on WhatsApp every week?" Their answer is your product spec.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 12</div><div class="iname">Map your solution to their problem</div><div class="idesc">Write it down: "They have this problem → I'll build this workflow → it solves it by doing this." One paragraph. Clear and simple.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 13-14</div><div class="iname">Send 48hr follow-ups + reach 5 more businesses</div><div class="idesc">Follow up anyone who didn't reply. Send 5 more DMs. Numbers are a game at this stage. More conversations = faster validation.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WEEK 3 -->
+  <div class="week-header">
+    <div class="week-badge">Wk 3</div>
+    <div class="week-info">
+      <div class="week-title">Build the Agent and Demo It</div>
+      <div class="week-goal">Build your first sellable agent · make it demo-ready · show 5 prospects</div>
+    </div>
+    <div class="week-outcome">→ first demo calls</div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 15</div><div class="iname">Build a generic version of your agent</div><div class="idesc">Build the WhatsApp FAQ bot (or your chosen product) using a fake business FAQ. Get it working end-to-end first.</div><div class="itool">n8n + twilio + openai</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 16</div><div class="iname">Test it 20 times with real questions</div><div class="idesc">Text your own Twilio sandbox number 20 different questions. Fix every weird response. The demo needs to look flawless.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 17</div><div class="iname">Personalise the demo for your top 3 prospects</div><div class="idesc">Update the system prompt with their actual business name, FAQ, menu, and hours. Takes 30 mins per demo. Closes 3x better.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 18</div><div class="iname">Record a 60-second screen demo video</div><div class="idesc">Use Loom (free). Show the WhatsApp conversation in real time. Narrate what's happening. This is your pitch asset — reuse it forever.</div><div class="itool">loom free</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 19</div><div class="iname">Send the free demo offer to all interested prospects</div><div class="idesc">Use Script 03. Send the personalised demo link or video. No price yet. Just "here's what it looks like for your business specifically."</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 20-21</div><div class="iname">Follow up on every demo. Log all responses in Sheets.</div><div class="idesc">Use Script 05 for anyone who went quiet. Track status in a simple Google Sheet: Sent → Replied → Demo Sent → Interested → Closed.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WEEK 4 -->
+  <div class="week-header">
+    <div class="week-badge" style="background:rgba(41,121,255,0.25);border:1px solid var(--blue);color:var(--blue);">Wk 4</div>
+    <div class="week-info">
+      <div class="week-title">Close, Deliver, and Collect Proof</div>
+      <div class="week-goal">First paid client · first delivery · first testimonial · first LinkedIn post about it</div>
+    </div>
+    <div class="week-outcome" style="color:var(--green);">→ PKR earned</div>
+  </div>
+
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 22</div><div class="iname">Send the price close to your hottest prospect</div><div class="idesc">Use Script 04. State the price clearly. PKR 12,000 setup + PKR 3,000/month. Don't hedge. Ask "want to move forward this week?"</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 23</div><div class="iname">Collect payment before starting delivery</div><div class="idesc">Use JazzCash, Easypaisa, or bank transfer. Half upfront minimum. This protects your time and signals commitment from the client.</div><div class="itool">jazzcash / easypaisa</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 24-25</div><div class="iname">Build the live version with their real data</div><div class="idesc">Use their actual WhatsApp number (Twilio live number), their real FAQ, menu, and hours. Test it with 20 real questions again.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 26</div><div class="iname">Send a progress update to the client mid-delivery</div><div class="idesc">"Building is going well — here's a quick look at the bot in action." Even a WhatsApp voice note works. Over-communication = trust.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 27</div><div class="iname">Deliver and hand off with a simple guide</div><div class="idesc">Record a 3-minute Loom showing how to use and update it. Send via WhatsApp. Collect the second half of your payment.</div></div>
+  </div>
+  <div class="item" onclick="toggle(this)">
+    <div class="cb"><svg class="ck" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+    <div class="ib"><div class="day-tag">Day 28</div><div class="iname">Ask for a testimonial. Post your result on LinkedIn.</div><div class="idesc">"Would you write 2–3 sentences about your experience?" Then post: "I just delivered my first AI project in Pakistan. Here's what I built and what I learned." That post gets you client 2.</div></div>
+  </div>
+
+  <!-- DONE MSG -->
+  <div class="done-msg" id="done-msg">
+    <div style="font-size:28px;margin-bottom:8px;">🎉</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Roadmap complete. You have your first client.</div>
+    <p style="font-size:13px;color:var(--muted);">Now raise your price by 30% and start Week 1 of the next cycle — this time for client 2.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want a mentor for this journey?</div>
+    <div class="aaghaz-title">The structured 12-week program that takes<br><span>you from this roadmap to a real business</span></div>
+    <div class="aaghaz-body">
+      This roadmap tells you what to do. <strong style="color:var(--text);">Aaghaz AI</strong> shows you how to do it with a mentor beside you. Asia's first AI startup institute runs a 12-week cohort with 1:1 mentorship, 20+ expert sessions, and a community of builders in Pakistan going through the same process at the same time.<br><br>
+      If you want accountability, structure, and expert guidance instead of figuring it out alone — it's worth exploring.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto 14px;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+
+<script>
+  const TOTAL=28;
+  function toggle(el){el.classList.toggle('done');update();}
+  function update(){
+    const done=document.querySelectorAll('.item.done').length;
+    document.getElementById('prog-fill').style.width=(done/TOTAL*100)+'%';
+    document.getElementById('prog-txt').textContent=done+' / '+TOTAL;
+    document.getElementById('done-msg').style.display=done===TOTAL?'block':'none';
+    const s=[];document.querySelectorAll('.item').forEach((el,i)=>s[i]=el.classList.contains('done'));
+    try{localStorage.setItem('arm',JSON.stringify(s));}catch(e){}
+  }
+  function resetAll(){document.querySelectorAll('.item').forEach(el=>el.classList.remove('done'));update();}
+  try{
+    const s=JSON.parse(localStorage.getItem('arm')||'[]');
+    document.querySelectorAll('.item').forEach((el,i)=>{if(s[i])el.classList.add('done');});
+    update();
+  }catch(e){}
+</script>
+</body>
+</html>
