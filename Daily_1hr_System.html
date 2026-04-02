@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Daily 1hr Builder System · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:12px;padding:14px 10px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:3px;}
+
+.prog-wrap{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:16px 18px;margin-bottom:32px;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+.prog-count{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--blue);}
+.prog-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),rgba(41,121,255,0.55));border-radius:3px;transition:width 0.4s;width:0%;}
+.reset-btn{background:transparent;border:1px solid rgba(41,121,255,0.2);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;border-radius:6px;padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.reset-btn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* block section */
+.block-card{background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;overflow:hidden;margin-bottom:20px;position:relative;}
+.block-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.25),transparent);}
+.block-header{padding:18px 22px 14px;border-bottom:1px solid rgba(41,121,255,0.08);display:flex;align-items:center;gap:14px;}
+.block-time-badge{background:rgba(41,121,255,0.12);border:1px solid rgba(41,121,255,0.2);border-radius:10px;padding:8px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);white-space:nowrap;letter-spacing:0.06em;}
+.block-meta{flex:1;}
+.block-name{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--text);}
+.block-dur{font-family:'DM Mono',monospace;font-size:9px;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
+.block-body{padding:14px 20px;display:flex;flex-direction:column;gap:8px;}
+.block-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px;}
+
+/* task item */
+.item{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;background:rgba(255,255,255,0.02);border:1px solid rgba(41,121,255,0.07);border-radius:9px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.item:hover{border-color:rgba(41,121,255,0.18);background:rgba(41,121,255,0.04);}
+.item.done{background:rgba(34,197,94,0.04);border-color:rgba(34,197,94,0.14);}
+.cb{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(41,121,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.2s;}
+.item.done .cb{background:var(--green);border-color:var(--green);}
+.ck{opacity:0;transition:opacity 0.2s;}
+.item.done .ck{opacity:1;}
+.ib{flex:1;}
+.iname{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;}
+.item.done .iname{color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(107,114,128,0.35);}
+.idesc{font-size:11px;color:var(--muted);line-height:1.5;margin-top:2px;}
+.itool{font-family:'DM Mono',monospace;font-size:8px;color:var(--blue);border:1px solid rgba(41,121,255,0.2);border-radius:3px;padding:2px 6px;margin-top:4px;display:inline-block;text-transform:uppercase;letter-spacing:0.08em;}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:16px 0;}
+
+/* weekly schedule */
+.week-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.week-day{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);min-width:32px;margin-top:4px;}
+.week-content{flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(41,121,255,0.08);border-radius:8px;padding:8px 12px;}
+.week-title{font-size:12px;font-weight:600;color:var(--text);}
+.week-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* done msg */
+.done-msg{display:none;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:24px;text-align:center;margin-bottom:28px;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:28px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}.week-row{flex-direction:column;}.week-day{min-width:auto;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Daily Checklist</div>
+    <h1>The Daily <span>1hr</span><br>Builder System</h1>
+    <p class="sub">The exact 60-minute daily system for building an AI brand as a student — with no wasted time and no decision fatigue.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">60</div><div class="stat-l">Minutes/Day</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Time Blocks</div></div>
+    <div class="stat"><div class="stat-n">20</div><div class="stat-l">Daily Tasks</div></div>
+    <div class="stat"><div class="stat-n">PKR 0</div><div class="stat-l">Tool Cost</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span class="prog-label">today's progress</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="prog-count" id="prog-txt">0 / 20</span>
+        <button class="reset-btn" onclick="resetAll()">Reset Day</button>
+      </div>
+    </div>
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- BLOCK 1 -->
+  <div class="block-card">
+    <div class="block-header">
+      <div class="block-time-badge">0:00 – 0:10</div>
+      <div class="block-meta">
+        <div class="block-name">Block 1 — Review & Plan</div>
+        <div class="block-dur">10 minutes · do this first, no exceptions</div>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="block-desc">Before you build anything, you need to know what happened yesterday and what matters today. This block prevents you from starting the wrong thing.</div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Check yesterday's LinkedIn post for comments</div><div class="idesc">Reply to every comment personally. One sentence minimum. This keeps the algorithm pushing your post and builds real connections.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Reply to all LinkedIn DMs from yesterday</div><div class="idesc">Anyone who commented a keyword gets the freebie link + one personalised follow-up question. Don't leave DMs pending more than 24hrs.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Write down today's ONE priority task</div><div class="idesc">Not a list. One thing. Either: write carousel, build workflow, send DMs, or follow up with a prospect. One only.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Check your prospect tracker in Google Sheets</div><div class="idesc">Anyone who needs a follow-up today? Anyone who asked a question and didn't get an answer? Flag them for Block 4.</div><div class="itool">google sheets</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2 -->
+  <div class="block-card">
+    <div class="block-header">
+      <div class="block-time-badge">0:10 – 0:30</div>
+      <div class="block-meta">
+        <div class="block-name">Block 2 — Build or Write</div>
+        <div class="block-dur">20 minutes · deep work · phone face down</div>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="block-desc">This is the only block that creates real output. Everything else is distribution and conversation. This block is the work itself — protect it.</div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Set a 20-minute timer before starting</div><div class="idesc">Use your phone clock. When it rings, you stop — even if you're mid-sentence. This prevents overrun into other blocks.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Work on ONE thing only — no tab switching</div><div class="idesc">If it's carousel day: write all 8 slide headlines first, then fill in content. If it's build day: open n8n and only n8n.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">If it's post day — schedule it for peak time</div><div class="idesc">Best times in Pakistan: 8–9am, 12–1pm, 6–8pm. Use Buffer free to schedule. Don't post manually if you can avoid it.</div><div class="itool">buffer free</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Log what you built/wrote in Notion</div><div class="idesc">One line: "Built: WhatsApp bot demo for prospect X" or "Wrote: Day 9 carousel on productivity." This becomes your builder diary.</div><div class="itool">notion free</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3 -->
+  <div class="block-card">
+    <div class="block-header">
+      <div class="block-time-badge">0:30 – 0:50</div>
+      <div class="block-meta">
+        <div class="block-name">Block 3 — Comment on 5 Posts</div>
+        <div class="block-dur">20 minutes · your distribution engine · never skip</div>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="block-desc">Commenting is not optional engagement. It's how you get seen. Every comment puts your name in front of someone else's audience. 5 comments per day = 150 new eyes on your name per month.</div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Search #AIAutomation or #LinkedInPakistan</div><div class="idesc">Find 5 posts with real engagement — not just big accounts. Commenting on niche posts gets you seen by the right people.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Leave a genuine 2–3 sentence comment on each</div><div class="idesc">Add a specific insight, a local angle (Pakistan), and end with a question. Never "great post!" — that helps nobody including you.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Follow the post author if they're in your niche</div><div class="idesc">Builders who post about AI, automation, or sales in Pakistan are potential collaborators, referral sources, and early supporters.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Reply to anyone who replies to your comment</div><div class="idesc">A back-and-forth in someone else's comments is a conversation started. Conversations become connections. Connections become clients.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4 -->
+  <div class="block-card">
+    <div class="block-header">
+      <div class="block-time-badge">0:50 – 1:00</div>
+      <div class="block-meta">
+        <div class="block-name">Block 4 — Send 3 DMs</div>
+        <div class="block-dur">10 minutes · one outreach per day compounds to 90/month</div>
+      </div>
+    </div>
+    <div class="block-body">
+      <div class="block-desc">3 DMs per day. Not 30. Not 0. 3. At 3 per day, 5 days a week, you're having 60 new conversations per month. That's more than enough to land 2–3 clients every month.</div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Send 1 new cold outreach DM</div><div class="idesc">Use Script 01 from the Cold DM Kit. One new business per day from your prospect list. Always personalise with their name and business.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Send 1 follow-up to a prospect who went quiet</div><div class="idesc">Check your Sheets tracker. Anyone at "No Reply" for 48+ hours gets Script 05 today. One follow-up only. Never more than twice.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Send 1 value DM to a warm connection</div><div class="idesc">Someone who liked your post, commented, or connected recently. Share a useful resource — your latest freebie, a tool tip, or a workflow idea. No pitch.</div></div>
+      </div>
+      <div class="item" onclick="toggle(this)">
+        <div class="cb"><svg class="ck" width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 11 11"><polyline points="1.5,5.5 4.5,8.5 9.5,2.5"/></svg></div>
+        <div class="ib"><div class="iname">Log all 3 DMs in your prospect tracker</div><div class="idesc">Add today's date, message sent, and current status. You can't follow a system you're not tracking. 2 minutes. Do it.</div><div class="itool">google sheets</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="done-msg" id="done-msg">
+    <div style="font-size:28px;margin-bottom:8px;">⚡</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">60 minutes done. Go live your life.</div>
+    <p style="font-size:13px;color:var(--muted);">Come back tomorrow. Same time. Same blocks. Consistency is the only strategy that actually compounds.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WEEKLY SCHEDULE -->
+  <section style="padding:20px 0;">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:24px;height:2px;background:var(--blue);border-radius:1px;"></span>weekly content plan</div>
+    <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px;">What to Build <span style="color:var(--blue);">Each Day</span></div>
+    <div class="week-row"><div class="week-day">Mon</div><div class="week-content"><div class="week-title">Write + Schedule Carousel</div><div class="week-sub">Block 2 = full carousel draft. Schedule for 8am Tuesday.</div></div></div>
+    <div class="week-row"><div class="week-day">Tue</div><div class="week-content"><div class="week-title">Build or Improve a Workflow</div><div class="week-sub">Block 2 = n8n work. Client demo or new automation for yourself.</div></div></div>
+    <div class="week-row"><div class="week-day">Wed</div><div class="week-content"><div class="week-title">Write + Schedule Carousel</div><div class="week-sub">Block 2 = second carousel of the week. Schedule for 8am Thursday.</div></div></div>
+    <div class="week-row"><div class="week-day">Thu</div><div class="week-content"><div class="week-title">Freebie or Client Work</div><div class="week-sub">Block 2 = build or update a freebie resource OR deliver client work.</div></div></div>
+    <div class="week-row"><div class="week-day">Fri</div><div class="week-content"><div class="week-title">Review Week + Plan Next</div><div class="week-sub">Block 2 = look at post performance. What worked? Do more of it next week.</div></div></div>
+    <div class="week-row"><div class="week-day">Sat</div><div class="week-content"><div class="week-title">Batch Content Day (optional)</div><div class="week-sub">2 hours: write 3–4 carousels for the next week. Set yourself up to be ahead.</div></div></div>
+    <div class="week-row"><div class="week-day">Sun</div><div class="week-content"><div class="week-title">Rest — no building</div><div class="week-sub">The system only works if you don't burn out. Rest is part of the system.</div></div></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want accountability for this system?</div>
+    <div class="aaghaz-title">Where builders in Pakistan<br><span>do this with mentorship and a community</span></div>
+    <div class="aaghaz-body">
+      A system is easier to run when there are people running it alongside you. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — runs a 12-week cohort where builders in Pakistan learn to build AI agents, sell them, and document the journey in public. With 1:1 mentorship and 20+ expert sessions, it's the structured version of what this freebie teaches informally.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+
+<script>
+  const TOTAL=20;
+  function toggle(el){el.classList.toggle('done');update();}
+  function update(){
+    const done=document.querySelectorAll('.item.done').length;
+    document.getElementById('prog-fill').style.width=(done/TOTAL*100)+'%';
+    document.getElementById('prog-txt').textContent=done+' / '+TOTAL;
+    document.getElementById('done-msg').style.display=done===TOTAL?'block':'none';
+    const s=[];document.querySelectorAll('.item').forEach((el,i)=>s[i]=el.classList.contains('done'));
+    try{localStorage.setItem('d1h',JSON.stringify(s));}catch(e){}
+  }
+  function resetAll(){document.querySelectorAll('.item').forEach(el=>el.classList.remove('done'));update();}
+  try{
+    const s=JSON.parse(localStorage.getItem('d1h')||'[]');
+    document.querySelectorAll('.item').forEach((el,i)=>{if(s[i])el.classList.add('done');});
+    update();
+  }catch(e){}
+</script>
+</body>
+</html>
