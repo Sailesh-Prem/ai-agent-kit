@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Prompt Cheatsheet · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:12px;padding:14px 10px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:3px;}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:16px 0;}
+
+/* category */
+.cat-header{display:flex;align-items:center;gap:10px;margin:28px 0 14px;}
+.cat-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-dim);border:1px solid var(--blue-glow);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;}
+.cat-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:1px;}
+
+/* prompt card */
+.pcard{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;overflow:hidden;margin-bottom:14px;position:relative;}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.pcard-header{padding:14px 18px 10px;border-bottom:1px solid rgba(41,121,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.pcard-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);}
+.pcard-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);}
+.copy-btn{background:rgba(41,121,255,0.1);border:1px solid rgba(41,121,255,0.2);color:var(--blue);font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;border-radius:6px;padding:4px 10px;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.copy-btn:hover{background:var(--blue);color:#fff;}
+.copy-btn.copied{background:var(--green);border-color:var(--green);color:#fff;}
+.pcard-body{padding:14px 18px;}
+.prompt-text{background:rgba(41,121,255,0.06);border:1px solid rgba(41,121,255,0.14);border-radius:8px;padding:12px 14px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;color:var(--text);margin-bottom:10px;white-space:pre-wrap;}
+.prompt-use{font-size:11px;color:var(--muted);line-height:1.55;}
+.prompt-use strong{color:var(--blue);}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:28px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Copy & Paste</div>
+    <h1>The <span>AI Prompt</span><br>Cheatsheet</h1>
+    <p class="sub">20 battle-tested prompts for Pakistani students building AI agents, selling services, and creating content — all copy-paste ready.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">20</div><div class="stat-l">Prompts</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Categories</div></div>
+    <div class="stat"><div class="stat-n">0s</div><div class="stat-l">Setup Time</div></div>
+    <div class="stat"><div class="stat-n">Free</div><div class="stat-l">Forever</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 1: SALES & OUTREACH -->
+  <div class="cat-header"><div class="cat-icon">📩</div><div><div class="cat-title">Sales & Outreach</div><div class="cat-count">5 prompts</div></div></div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 01</div><div class="pcard-name">Cold DM Writer</div></div><button class="copy-btn" onclick="copyPrompt(this, 1)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p1">Write a 3-line cold DM to [Name], owner of [Business Name], a [type of business] in [city]. I build WhatsApp bots that answer customer questions 24/7 using AI. Sound human, specific to their business, and end with a question — not a pitch. Do not mention price.</div>
+      <div class="prompt-use"><strong>Use for:</strong> First message to any cold prospect on WhatsApp, LinkedIn, or Instagram.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 02</div><div class="pcard-name">Objection Handler</div></div><button class="copy-btn" onclick="copyPrompt(this, 2)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p2">A potential client said: "[paste their exact objection]". I'm selling a WhatsApp AI bot for their [business type] at PKR 12,000 setup + PKR 3,000/month. Write a calm, confident 3-sentence reply that addresses the concern without reducing the price. End with a soft call to action.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Any time a prospect says "too expensive," "I'll think about it," or "I'm not sure."</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 03</div><div class="pcard-name">Follow-Up Message</div></div><button class="copy-btn" onclick="copyPrompt(this, 3)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p3">Write a short 2-sentence follow-up message to [Name] at [Business Name]. I sent them a free demo of a WhatsApp bot 48 hours ago and haven't heard back. The message should create mild urgency without being pushy. Mention that I'm taking on 2 more businesses in [city] this month.</div>
+      <div class="prompt-use"><strong>Use for:</strong> The 48hr follow-up after a demo is sent with no reply.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 04</div><div class="pcard-name">Demo Description Writer</div></div><button class="copy-btn" onclick="copyPrompt(this, 4)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p4">Write a 3-sentence WhatsApp message to send alongside a demo link for a WhatsApp FAQ bot I built for [Business Name], a [type] in [city]. The message should explain what the demo does, how to test it, and invite them to say yes to a full build. Keep it conversational and excited, not formal.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Sending the demo after a prospect says they want to see it.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 05</div><div class="pcard-name">Price Anchor Message</div></div><button class="copy-btn" onclick="copyPrompt(this, 5)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p5">Write a confident 4-sentence closing message for a WhatsApp bot service. The setup is PKR 12,000 one-time and PKR 3,000/month maintenance. Frame the price in terms of what it saves them — time and missed customer enquiries. End with "Want to move forward this week?" Do not sound desperate.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Sending the price after a prospect has seen and liked the demo.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 2: AGENT BUILDING -->
+  <div class="cat-header"><div class="cat-icon">🤖</div><div><div class="cat-title">AI Agent Building</div><div class="cat-count">4 prompts</div></div></div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 06</div><div class="pcard-name">System Prompt Builder</div></div><button class="copy-btn" onclick="copyPrompt(this, 6)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p6">You are a helpful assistant for [Business Name], a [type] based in [city]. Only answer questions using the information below. If a customer asks something not covered, say: "Let me check with the team and get back to you shortly." Always be friendly and reply in the same language the customer uses.
+
+Business Info:
+[paste FAQ, menu, hours, location, pricing here]</div>
+      <div class="prompt-use"><strong>Use for:</strong> n8n OpenAI node system prompt for any WhatsApp or website chatbot.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 07</div><div class="pcard-name">FAQ Extractor</div></div><button class="copy-btn" onclick="copyPrompt(this, 7)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p7">Here is information about [Business Name]: [paste website text, Instagram bio, or any business info]. Extract the 10 most common questions a customer would ask this business on WhatsApp. For each question, write a clear, friendly answer in under 60 words. Format as Q: / A: pairs.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Building the knowledge base for any client's WhatsApp bot in under 5 minutes.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 08</div><div class="pcard-name">n8n Node Debugger</div></div><button class="copy-btn" onclick="copyPrompt(this, 8)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p8">I'm building an n8n workflow and getting this error: [paste error message]. Here's what my workflow is trying to do: [describe the flow]. Here's the node setup causing the issue: [describe the node]. What's wrong and how do I fix it? Give me the exact steps.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Debugging any n8n error without spending hours Googling.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 09</div><div class="pcard-name">Workflow Planner</div></div><button class="copy-btn" onclick="copyPrompt(this, 9)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p9">I want to build an n8n workflow that does the following: [describe the automation in plain English]. I have access to: n8n free cloud, Gmail, Google Sheets, OpenAI API, and Twilio free tier. Design the workflow step by step — list each node, what it does, and what data it passes to the next node.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Planning any new automation before opening n8n — saves hours of trial and error.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 3: CONTENT -->
+  <div class="cat-header"><div class="cat-icon">✍️</div><div><div class="cat-title">Content Creation</div><div class="cat-count">4 prompts</div></div></div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 10</div><div class="pcard-name">LinkedIn Hook Generator</div></div><button class="copy-btn" onclick="copyPrompt(this, 10)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p10">Write 5 LinkedIn post opening lines (hooks) about [topic]. Each must be under 12 words. Use one of these formats per hook: 1. Contrarian statement, 2. Specific result with number, 3. Vulnerability/honest confession, 4. List tease, 5. Direct question. Target audience: young Pakistanis learning AI and freelancing.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Writing the first line of any LinkedIn carousel or text post.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 11</div><div class="pcard-name">Content Repurposer</div></div><button class="copy-btn" onclick="copyPrompt(this, 11)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p11">Here is a YouTube transcript: [paste transcript]. Repurpose it into: 1. A LinkedIn carousel hook (2 punchy lines, max 12 words), 2. A LinkedIn caption (150 words, conversational), 3. A 5-tweet thread with a hook tweet, 4. A WhatsApp broadcast message (80 words max), 5. An Instagram caption with 3 relevant hashtags. Keep it punchy — no fluff.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Turning one video into a week of content for any client.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 12</div><div class="pcard-name">Caption Writer</div></div><button class="copy-btn" onclick="copyPrompt(this, 12)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p12">Write a LinkedIn post caption for a carousel about [topic]. The first line must stop the scroll — use a contrarian statement or a specific result. Total length: 100–150 words. End with a keyword CTA: "Comment [KEYWORD] and I'll DM you [freebie name] instantly." Tone: punchy, honest, no corporate fluff. Written by an IT student in Karachi building in public.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Writing the caption for any LinkedIn carousel post.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 13</div><div class="pcard-name">Comment Reply Writer</div></div><button class="copy-btn" onclick="copyPrompt(this, 13)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p13">Write a 2-sentence LinkedIn comment reply to: "[paste their comment]" on my post about [topic]. The reply should add a new insight not already in my post, reference something specific from their comment, and end with a question to continue the conversation. Tone: peer-to-peer, not teacher-to-student.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Replying to comments on your posts in a way that extends the conversation.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 4: CLIENT DELIVERY -->
+  <div class="cat-header"><div class="cat-icon">🤝</div><div><div class="cat-title">Client Delivery</div><div class="cat-count">4 prompts</div></div></div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 14</div><div class="pcard-name">Progress Update Writer</div></div><button class="copy-btn" onclick="copyPrompt(this, 14)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p14">Write a short WhatsApp progress update message to a client for whom I'm building a [project type]. Here's what I've completed so far: [list]. Here's what's left: [list]. Expected delivery: [date]. The message should be professional but warm, reassure them everything is on track, and not ask any unnecessary questions.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Mid-project client updates that build trust without wasting their time.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 15</div><div class="pcard-name">Testimonial Request</div></div><button class="copy-btn" onclick="copyPrompt(this, 15)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p15">Write a WhatsApp message asking [Client Name] for a testimonial for the [project] I delivered 7 days ago. The message should: feel natural and not transactional, explain briefly where I'll use it (LinkedIn), make it easy by suggesting they write 2–3 sentences, and thank them for working with me. Keep it under 60 words.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Requesting testimonials 7 days after every project delivery.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 16</div><div class="pcard-name">Payment Reminder</div></div><button class="copy-btn" onclick="copyPrompt(this, 16)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p16">Write a polite payment reminder WhatsApp message to [Client Name]. Invoice amount: PKR [amount]. Due date: [date]. It's now [X days] overdue. The message should be firm but friendly, reference the invoice clearly, and include a simple payment method instruction. Do not apologise for asking. Keep it under 50 words.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Chasing overdue invoices without damaging the client relationship.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 17</div><div class="pcard-name">Delivery Handoff Message</div></div><button class="copy-btn" onclick="copyPrompt(this, 17)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p17">Write a WhatsApp delivery message for a completed [project type] for [Client Name]. Include: a clear statement that it's live, a link to the Loom walkthrough video, instructions for the one thing they need to do to activate it, and an offer to answer questions for the next 7 days. Friendly and confident. Under 100 words.</div>
+      <div class="prompt-use"><strong>Use for:</strong> The final delivery message that makes clients feel taken care of.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 5: SELF MANAGEMENT -->
+  <div class="cat-header"><div class="cat-icon">⚡</div><div><div class="cat-title">Personal Productivity</div><div class="cat-count">3 prompts</div></div></div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 18</div><div class="pcard-name">Weekly Review</div></div><button class="copy-btn" onclick="copyPrompt(this, 18)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p18">Here is my activity log for this week: [paste notes or bullet points]. Write a 5-bullet weekly review: 1. What I achieved, 2. What I should have done differently, 3. What wasted the most time, 4. My 3 priorities for next week, 5. One mindset observation. Be direct and honest — not motivational. I don't need encouragement, I need clarity.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Every Sunday night. Closes the week and opens the next one with focus.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 19</div><div class="pcard-name">Daily Priority Decider</div></div><button class="copy-btn" onclick="copyPrompt(this, 19)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p19">Here is my to-do list for today: [paste list]. My current goal is [main goal — e.g., land first client, finish carousel, build workflow]. I have exactly 60 minutes. Pick the ONE task from this list that will move the needle most toward my goal. Explain in 2 sentences why that task and not the others. Ignore everything else.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Every morning before starting your 60-minute block. Removes decision fatigue instantly.</div>
+    </div>
+  </div>
+
+  <div class="pcard">
+    <div class="pcard-header"><div><div class="pcard-num">Prompt 20</div><div class="pcard-name">Idea to Action Converter</div></div><button class="copy-btn" onclick="copyPrompt(this, 20)">Copy</button></div>
+    <div class="pcard-body">
+      <div class="prompt-text" id="p20">I have this idea: [describe idea]. Turn it into a 3-step action plan I can start today with the tools I already have (n8n free, Gmail, Google Sheets, Notion, ChatGPT free). Step 1 must be completable in under 30 minutes. No theory — just the exact first three actions in sequence.</div>
+      <div class="prompt-use"><strong>Use for:</strong> Any time you have an idea but don't know where to start. Turns thoughts into tasks in 30 seconds.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want to go deeper than prompts?</div>
+    <div class="aaghaz-title">Where prompts meet real<br><span>AI agent systems and mentorship</span></div>
+    <div class="aaghaz-body">
+      Great prompts get you started. But to build AI agents that clients pay for consistently, you need systems, not just prompts. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — runs a 12-week program that teaches you to build agentic workflows, package them as services, and sell them to businesses in Pakistan and globally. With 1:1 mentorship and a builder community, it's the structured path from prompt user to AI product owner.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+
+<script>
+function copyPrompt(btn, num) {
+  const text = document.getElementById('p' + num).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
