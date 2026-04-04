@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Builder Mistake Index · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+.stat{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);}
+.stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue);line-height:1;}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-top:4px;}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:16px 0;}
+
+/* category */
+.cat-header{display:flex;align-items:center;gap:10px;margin:28px 0 14px;}
+.cat-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-dim);border:1px solid var(--blue-glow);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;}
+.cat-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:1px;}
+
+/* mistake card */
+.mcard{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative;}
+.mcard::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--red);}
+.mcard-header{padding:14px 18px 10px 22px;border-bottom:1px solid rgba(41,121,255,0.08);}
+.mcard-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--red);margin-bottom:2px;}
+.mcard-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);}
+.mcard-body{padding:12px 18px 16px 22px;display:flex;flex-direction:column;gap:8px;}
+.mcard-what{font-size:12px;color:var(--muted);line-height:1.55;}
+.mcard-fix{background:rgba(41,121,255,0.06);border:1px solid rgba(41,121,255,0.15);border-radius:8px;padding:10px 12px;}
+.mcard-fix-label{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.12em;color:var(--blue);margin-bottom:4px;}
+.mcard-fix-text{font-size:12px;color:var(--text);line-height:1.5;font-weight:500;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:28px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr;}.stats .stat:last-child{grid-column:span 2;}}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Learn From My Losses</div>
+    <h1>The Builder<br><span>Mistake</span> Index</h1>
+    <p class="sub">15 real mistakes I made building an AI business in Pakistan — and the exact rule that prevents each one.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">15</div><div class="stat-l">Mistakes Documented</div></div>
+    <div class="stat"><div class="stat-n">15</div><div class="stat-l">Fixes Included</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Categories</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 1: PRICING -->
+  <div class="cat-header"><div class="cat-icon">💰</div><div><div class="cat-title">Pricing Mistakes</div><div class="cat-count">3 mistakes</div></div></div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 01 · Cost: 1 client + 3 weeks</div><div class="mcard-title">Underpricing to win the deal</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Quoted PKR 5,000 instead of PKR 12,000 because I was scared of rejection. Won the deal — but the client treated the work like it was worth PKR 5,000. Endless revisions. Zero respect for timelines. No retainer. Total loss.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Quote PKR 12,000 minimum, always. Low price attracts low-value clients. The number is a filter — use it.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 02 · Cost: 2 weeks unpaid</div><div class="mcard-title">Negotiating down when they pushed back</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Client said "that's too much." I immediately dropped to PKR 8,000 without any counter. They accepted but never respected the project timeline. I trained them that my price was negotiable — which meant my time was negotiable too.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">When pushed back on price, hold it for the first 3 clients. Instead say: "The price is fixed but I can adjust the scope if needed."</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 03 · Cost: PKR 0 earned</div><div class="mcard-title">Doing free work hoping for paid referrals</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Helped 3 businesses for free thinking it would lead to paid work or referrals. Got neither. Free work attracts people who don't value the work. One month of effort, zero revenue, zero referrals, and zero testimonials worth using.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Offer a free demo — not free work. A 2-hour demo closes clients. A month of free work closes nobody.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 2: CLIENT MANAGEMENT -->
+  <div class="cat-header"><div class="cat-icon">🤝</div><div><div class="cat-title">Client Management Mistakes</div><div class="cat-count">3 mistakes</div></div></div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 04 · Cost: 2 weeks of work</div><div class="mcard-title">Starting work before collecting any payment</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Client agreed verbally. I started building immediately. Spent 2 weeks on a full automation system. They disappeared. No payment. No reply. I had no contract, no deposit, and no recourse. Everything I built was gone.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">50% upfront via JazzCash or Easypaisa before opening n8n. No payment = no project. No exceptions.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 05 · Cost: 1 referral lost</div><div class="mcard-title">Forgetting to ask for a testimonial</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Delivered great work. Client was happy. I moved on immediately to the next project. Never asked for a testimonial. 2 months later they referred someone to a different person who had more visible social proof. My best work is invisible.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Set a reminder for day 7 post-delivery on every project. Send the testimonial request that day, every time.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 06 · Cost: 1 repeat client</div><div class="mcard-title">Going silent after delivery</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Delivered the project. Client said thanks. I went quiet. 3 months later their bot broke from a Twilio update. They called a different developer — not me — because I wasn't top of mind. Lost a PKR 3,000/month retainer forever.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Check in with every client once a month — one WhatsApp message asking how the bot is performing. This alone retains clients indefinitely.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 3: CONTENT & BRAND -->
+  <div class="cat-header"><div class="cat-icon">📱</div><div><div class="cat-title">Content & Brand Mistakes</div><div class="cat-count">3 mistakes</div></div></div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 07 · Cost: 4 weeks of reach</div><div class="mcard-title">Posting without a defined niche</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Posted "AI is the future" content for a month. Motivation quotes. Generic tips. Zero comments. Zero DMs. The algorithm had no idea what I was about — so it showed my content to nobody. Niche-less content is invisible content.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Post only about AI agents and sales. Every single post. The algorithm rewards topical consistency more than frequency or quality alone.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 08 · Cost: Zero engagement</div><div class="mcard-title">Posting the link in the caption</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Put the freebie link directly in my LinkedIn caption. Post got 60% less reach than normal. LinkedIn's algorithm buries posts with external links. The people who would have engaged never even saw it. A week of content work wasted.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Never put links in LinkedIn captions. Use comment CTAs (Comment KEYWORD) and DM the link manually or via freebie tools.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 09 · Cost: Dead posts</div><div class="mcard-title">Posting and disappearing for the first hour</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Posted carousels and immediately went offline. The first 60 minutes are when LinkedIn decides whether to push your content wider. With zero engagement in that window, every post I made died in the feed before reaching anyone new.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Stay active for 60 minutes after every post. Reply to comments immediately. Comment on 5 other posts. Engagement in the Golden Hour compounds your reach.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 4: BUILDING & DELIVERY -->
+  <div class="cat-header"><div class="cat-icon">🔧</div><div><div class="cat-title">Building & Delivery Mistakes</div><div class="cat-count">3 mistakes</div></div></div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 10 · Cost: 3 weeks</div><div class="mcard-title">Learning 5 tools instead of mastering 1</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Spent 3 weeks trying to learn n8n, Make.com, Zapier, Python, and ChatGPT API simultaneously. Understood a bit of everything. Built nothing. No client would pay for "a bit of everything." Total burnout by week 3.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Pick n8n. Delete the rest. Spend 2 full weeks on nothing but n8n. Mastery of one tool beats awareness of five, every single time.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 11 · Cost: 1 angry client</div><div class="mcard-title">Delivering without testing properly</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Delivered a WhatsApp bot to a client without stress testing it. First day live, a customer asked a question slightly differently than the FAQ and the bot gave a completely wrong answer. Client was embarrassed in front of their customer. I lost their trust.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Before delivery, send 20+ test messages including weird phrasing, typos, and off-topic questions. The bot must handle every edge case gracefully.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 12 · Cost: Delayed payment</div><div class="mcard-title">Over-delivering on scope without saying anything</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Added extra features the client didn't ask for because I wanted to impress them. They loved it but then expected those extras in every future project at the same price. I created a new standard I couldn't maintain without burning out.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Deliver exactly what was agreed. If you add anything extra, label it clearly as a bonus. "I added X as a bonus this time — normally this would be an additional PKR Y."</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CAT 5: MINDSET -->
+  <div class="cat-header"><div class="cat-icon">🧠</div><div><div class="cat-title">Mindset Mistakes</div><div class="cat-count">3 mistakes</div></div></div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 13 · Cost: 2 months</div><div class="mcard-title">Waiting to feel "ready" before sending DMs</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Spent 2 months learning, building demos, perfecting my pitch — and sending zero DMs. Was waiting to feel confident enough. Confidence doesn't come before action. It comes after the first client responds. I delayed it by 2 months for no reason.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Send the first DM when you have a working demo — not when you feel ready. Ready never comes. The DM does.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 14 · Cost: 1 month of momentum</div><div class="mcard-title">Quitting after 2 weeks of no results</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Posted for 2 weeks. Zero comments. Zero DMs. Quit for a month. Started again. Had to rebuild momentum from scratch. The algorithm penalises inconsistency and so does your audience. Stopping and starting is worse than slow and steady.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Commit to 90 days minimum before judging the results. Results on LinkedIn are exponential — weeks 1–4 feel like nothing. Weeks 5–12 compound fast.</div></div>
+    </div>
+  </div>
+
+  <div class="mcard">
+    <div class="mcard-header"><div class="mcard-num">Mistake 15 · Cost: Wasted energy</div><div class="mcard-title">Comparing my chapter 1 to someone's chapter 10</div></div>
+    <div class="mcard-body">
+      <div class="mcard-what">Spent weeks demoralised because other people on LinkedIn seemed further ahead. They had 5,000 followers and were charging $500/hour. I had 94 connections and was still figuring out my first DM. The comparison paralysed me instead of informing me.</div>
+      <div class="mcard-fix"><div class="mcard-fix-label">The fix</div><div class="mcard-fix-text">Only compare yourself to who you were last week. Use other people's journeys as data, not benchmarks. Your path is yours.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want to avoid mistakes with guidance?</div>
+    <div class="aaghaz-title">Where builders in Pakistan learn<br><span>with mentors beside them</span></div>
+    <div class="aaghaz-body">
+      Most of these mistakes are avoidable with the right guidance from day one. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — runs a 12-week program with 1:1 mentorship specifically for people building AI businesses in Pakistan. The kind of feedback that would have saved me 6 months of trial and error.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <!-- CTA -->
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
