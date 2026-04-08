@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Product Idea Generator · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:16px 0;}
+
+/* idea card */
+.icard{background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;overflow:hidden;margin-bottom:16px;position:relative;}
+.icard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.25),transparent);}
+.icard-header{padding:18px 22px 14px;border-bottom:1px solid rgba(41,121,255,0.08);display:flex;align-items:center;gap:14px;}
+.icard-icon{width:44px;height:44px;border-radius:10px;background:rgba(41,121,255,0.12);border:1px solid rgba(41,121,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.icard-meta{flex:1;}
+.icard-num{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:2px;}
+.icard-name{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);}
+.icard-price{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--green);white-space:nowrap;}
+.icard-body{padding:14px 22px;display:flex;flex-direction:column;gap:10px;}
+.icard-row{display:flex;gap:8px;align-items:flex-start;}
+.icard-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);min-width:72px;margin-top:2px;}
+.icard-val{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
+.icard-val strong{color:var(--text);}
+.pitch-box{background:rgba(41,121,255,0.06);border:1px solid rgba(41,121,255,0.15);border-radius:8px;padding:10px 12px;}
+.pitch-label{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:4px;}
+.pitch-text{font-size:12px;color:var(--text);line-height:1.55;font-style:italic;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:28px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · 10 Ideas · Pick One</div>
+    <h1>The <span>Product Idea</span><br>Generator</h1>
+    <p class="sub">10 AI products you can build and sell in Pakistan right now — each with a niche, a price, a build time, and the exact one-line pitch.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 10 IDEAS -->
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">🤖</div>
+      <div class="icard-meta"><div class="icard-num">Idea 01</div><div class="icard-name">WhatsApp FAQ Bot</div></div>
+      <div class="icard-price">PKR 12,000 + 3k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Restaurants, salons, clinics, coaching businesses</strong> in any Pakistani city</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Answering the same WhatsApp questions manually 20+ times per day</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">2 hours · Tools: n8n + Twilio + OpenAI</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"I build a WhatsApp assistant for your business that answers customer questions 24/7 — so you never miss an enquiry again."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">📅</div>
+      <div class="icard-meta"><div class="icard-num">Idea 02</div><div class="icard-name">AI Booking Receptionist</div></div>
+      <div class="icard-price">PKR 18,000 + 4k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Clinics, tutors, salons, coaches</strong> with appointment-based businesses</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Hours lost to back-and-forth WhatsApp booking conversations</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">4 hours · Tools: n8n + Twilio + Google Calendar + OpenAI</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"Your WhatsApp handles all booking conversations automatically. You only show up for the actual appointment."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">✍️</div>
+      <div class="icard-meta"><div class="icard-num">Idea 03</div><div class="icard-name">Weekly Content Package</div></div>
+      <div class="icard-price">PKR 20,000/month</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Coaches, consultants, personal brands</strong> posting on LinkedIn or Instagram</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Spending 5+ hours per week writing content from scratch</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">3 hours setup · Tools: n8n + YouTube API + OpenAI + Notion</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"You record once. I turn it into a week of LinkedIn posts, tweets, and WhatsApp broadcasts — automatically."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">🎯</div>
+      <div class="icard-meta"><div class="icard-num">Idea 04</div><div class="icard-name">Lead Gen Autopilot</div></div>
+      <div class="icard-price">PKR 25,000 + 5k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Agencies, freelancers, B2B service businesses</strong> that need consistent leads</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Spending hours manually finding and emailing prospects with no system</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">5 hours · Tools: n8n + Google Maps API + OpenAI + Gmail + Sheets</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"I build a system that finds your ideal clients, writes them a personalised email, and sends it automatically — every single day."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">📊</div>
+      <div class="icard-meta"><div class="icard-num">Idea 05</div><div class="icard-name">Weekly Business Report</div></div>
+      <div class="icard-price">PKR 8,000/month</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Small business owners</strong> who need visibility on their numbers without spreadsheets</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">No visibility into weekly performance — or spending 45 mins building reports manually</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">2 hours · Tools: n8n + Google Sheets + OpenAI + Gmail</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"Every Monday morning you get a clean summary of your business — automatically in your inbox. No action needed."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">🔄</div>
+      <div class="icard-meta"><div class="icard-num">Idea 06</div><div class="icard-name">Customer Follow-Up System</div></div>
+      <div class="icard-price">PKR 10,000 + 2.5k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>E-commerce, retail, and service businesses</strong> with repeat purchase potential</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Never following up with customers after a purchase or enquiry — losing repeat business</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">2 hours · Tools: n8n + Gmail + Google Sheets + OpenAI</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"Every customer who buys from you gets an automatic follow-up at day 3, day 7, and day 30. No manual work."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">🎓</div>
+      <div class="icard-meta"><div class="icard-num">Idea 07</div><div class="icard-name">Student Enquiry Bot</div></div>
+      <div class="icard-price">PKR 15,000 + 3k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Private tuition academies, online courses, training institutes</strong> in Pakistan</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Staff wasting hours answering admission, fee, and schedule questions on WhatsApp</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">2 hours · Tools: n8n + Twilio + OpenAI + Sheets</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"Parents and students get instant answers to admissions and fee questions on WhatsApp — 24/7, without involving your staff."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">🏠</div>
+      <div class="icard-meta"><div class="icard-num">Idea 08</div><div class="icard-name">Property Enquiry Agent</div></div>
+      <div class="icard-price">PKR 20,000 + 4k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Real estate agents and property developers</strong> managing multiple listings</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">Missing leads because enquiries come at odd hours and go unanswered for hours</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">3 hours · Tools: n8n + Twilio + OpenAI + Google Sheets</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"Every property enquiry on WhatsApp gets an instant, personalised reply — with the right listing details — even at 2am."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">🛍️</div>
+      <div class="icard-meta"><div class="icard-num">Idea 09</div><div class="icard-name">Order Tracking Bot</div></div>
+      <div class="icard-price">PKR 12,000 + 2.5k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Online clothing brands, food delivery, and e-commerce</strong> businesses in Pakistan</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">"Where is my order?" being the most repeated WhatsApp message every business owner hates</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">2 hours · Tools: n8n + Twilio + Google Sheets + OpenAI</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"Customers type their order number on WhatsApp and get an instant status update. You never answer that question manually again."</div></div>
+    </div>
+  </div>
+
+  <div class="icard">
+    <div class="icard-header">
+      <div class="icard-icon">💼</div>
+      <div class="icard-meta"><div class="icard-num">Idea 10</div><div class="icard-name">HR Onboarding Automator</div></div>
+      <div class="icard-price">PKR 30,000 + 5k/mo</div>
+    </div>
+    <div class="icard-body">
+      <div class="icard-row"><span class="icard-label">For</span><span class="icard-val"><strong>Small companies and startups</strong> that hire frequently and have no HR system</span></div>
+      <div class="icard-row"><span class="icard-label">Solves</span><span class="icard-val">New hire onboarding taking 2–3 days of manual emails, forms, and document sharing</span></div>
+      <div class="icard-row"><span class="icard-label">Build time</span><span class="icard-val">5 hours · Tools: n8n + Gmail + Google Forms + Notion + Sheets</span></div>
+      <div class="pitch-box"><div class="pitch-label">Your one-line pitch</div><div class="pitch-text">"When you hire someone, the system automatically sends their documents, collects their info, and sets up their Notion workspace — without HR touching it."</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want to build and sell these faster?</div>
+    <div class="aaghaz-title">Where these products become<br><span>a real structured business</span></div>
+    <div class="aaghaz-body">
+      Picking an idea is step one. Building it, pricing it, and selling it consistently is where most people get stuck. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — runs a 12-week program that covers the full cycle: build the agent, package the service, and close the clients. Built for Pakistan. Focused on real income.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
