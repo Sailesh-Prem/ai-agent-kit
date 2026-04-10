@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>System Thinking Kit · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+
+section{padding:24px 0;}
+.slabel{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.slabel::before{content:'';display:inline-block;width:24px;height:2px;background:var(--blue);border-radius:1px;}
+.stitle{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:14px;}
+.stitle span{color:var(--blue);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:12px 0;}
+
+/* friday questions */
+.q-card{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;padding:18px 20px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;}
+.q-num{font-family:'DM Mono',monospace;font-size:20px;color:var(--blue);font-weight:500;min-width:28px;margin-top:1px;}
+.q-body{flex:1;}
+.q-title{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px;}
+.q-desc{font-size:12px;color:var(--muted);line-height:1.55;}
+.q-action{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);margin-top:6px;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* weekly audit table */
+.audit-row{display:grid;grid-template-columns:1fr 80px 80px;gap:8px;padding:12px 16px;border-radius:8px;margin-bottom:6px;align-items:center;}
+.audit-header{background:rgba(41,121,255,0.12);border:1px solid rgba(41,121,255,0.2);}
+.audit-body{background:rgba(255,255,255,0.02);border:1px solid rgba(41,121,255,0.07);}
+.audit-task{font-size:12px;color:var(--text);font-weight:500;}
+.audit-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);text-align:center;}
+
+/* audit checkboxes */
+.check-col{display:flex;justify-content:center;}
+.mini-cb{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(41,121,255,0.3);cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.mini-cb.checked{background:var(--green);border-color:var(--green);}
+.mini-cb.red-check{border-color:rgba(239,68,68,0.4);}
+.mini-cb.red-check.checked{background:var(--red);border-color:var(--red);}
+
+/* automation map */
+.amap{background:var(--glass);border:1px solid var(--blue-glow);border-radius:14px;overflow:hidden;margin-bottom:10px;}
+.amap-header{padding:12px 18px;border-bottom:1px solid rgba(41,121,255,0.08);display:flex;align-items:center;justify-content:space-between;}
+.amap-task{font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text);}
+.amap-tag{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--red);border:1px solid rgba(239,68,68,0.2);border-radius:4px;padding:2px 7px;}
+.amap-body{padding:10px 18px;display:flex;gap:12px;align-items:flex-start;}
+.amap-arrow{font-family:'DM Mono',monospace;font-size:14px;color:var(--blue);flex-shrink:0;margin-top:2px;}
+.amap-solution{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
+.amap-solution strong{color:var(--text);}
+.tool-badge{font-family:'DM Mono',monospace;font-size:8px;color:var(--blue);border:1px solid rgba(41,121,255,0.2);border-radius:3px;padding:2px 6px;display:inline-block;margin-top:4px;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:24px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Free Resource · Weekly System Audit</div>
+    <h1>The <span>System</span><br>Thinking Kit</h1>
+    <p class="sub">A weekly audit template, the 4 Friday questions, and 10 tasks you should already be automating — mapped to free tools.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- THE 4 FRIDAY QUESTIONS -->
+  <section>
+    <div class="slabel">run every friday</div>
+    <div class="stitle">The 4 <span>Friday Questions</span></div>
+
+    <div class="q-card">
+      <span class="q-num">Q1</span>
+      <div class="q-body">
+        <div class="q-title">What did I repeat this week?</div>
+        <div class="q-desc">List every task you did more than twice. Any task you repeat more than 3 times per week should not be done by a human. It's an automation candidate.</div>
+        <div class="q-action">→ Write the list. Circle the most painful one.</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-num">Q2</span>
+      <div class="q-body">
+        <div class="q-title">What took longer than it should have?</div>
+        <div class="q-desc">Time you resent spending is time a system should own. If you felt frustrated while doing a task, that frustration is data — it's telling you the task doesn't deserve your attention.</div>
+        <div class="q-action">→ Name it. Is it automatable? If yes — that's next week's build.</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-num">Q3</span>
+      <div class="q-body">
+        <div class="q-title">What would disappear if X ran automatically?</div>
+        <div class="q-desc">Name the outcome you want. Then work backwards. "If follow-up emails went out automatically — I'd never lose a warm lead again." That outcome is the goal. The n8n workflow is the path.</div>
+        <div class="q-action">→ Write the outcome. Then design the 3-node workflow that achieves it.</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-num">Q4</span>
+      <div class="q-body">
+        <div class="q-title">What's the ONE system I'll build this weekend?</div>
+        <div class="q-desc">Not two. Not a list. One. Pick the task from Q1 or Q2 that causes the most friction. Build the simplest version of a system that eliminates it. Use it on Monday.</div>
+        <div class="q-action">→ Write it down. Block 2 hours on Saturday. Ship it.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WEEKLY AUDIT TABLE -->
+  <section>
+    <div class="slabel">your weekly audit</div>
+    <div class="stitle">Tick Every <span>Task You Did This Week</span></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">For every task with a ✓ in "Did manually" — ask yourself: could this be automated? If yes, it goes on your build list.</p>
+
+    <div class="audit-row audit-header">
+      <span class="audit-label" style="text-align:left;">Task</span>
+      <span class="audit-label">Did manually</span>
+      <span class="audit-label">Can automate</span>
+    </div>
+
+    <div class="audit-row audit-body">
+      <span class="audit-task">Answered WhatsApp customer questions</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Sent follow-up messages to prospects</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Wrote LinkedIn content from scratch</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Searched for leads manually</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Copy-pasted the same email reply</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Created a weekly report or update</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Posted content on multiple platforms</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Sent payment reminders to clients</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Reviewed and logged daily tasks</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+    <div class="audit-row audit-body">
+      <span class="audit-task">Asked a client for a testimonial</span>
+      <div class="check-col"><div class="mini-cb red-check" onclick="this.classList.toggle('checked')"></div></div>
+      <div class="check-col"><div class="mini-cb" onclick="this.classList.toggle('checked')"></div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 10 AUTOMATION MAP -->
+  <section>
+    <div class="slabel">automation map</div>
+    <div class="stitle">10 Tasks You Should <span>Stop Doing Manually</span></div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Answering WhatsApp customer questions</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a WhatsApp FAQ bot.</strong> n8n receives the message → OpenAI reads the FAQ → Twilio sends the reply. Done in 2 hours. Runs forever.<br><span class="tool-badge">n8n + OpenAI + Twilio</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Sending follow-up messages to prospects</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a 48hr follow-up workflow.</strong> Google Sheets tracks status → n8n checks every 48hrs → Gmail sends the follow-up automatically.<br><span class="tool-badge">n8n + Sheets + Gmail</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Writing LinkedIn content from scratch daily</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a content repurposing agent.</strong> Paste YouTube URL → n8n pulls transcript → OpenAI rewrites into 5 post formats → Notion delivers them.<br><span class="tool-badge">n8n + YouTube API + OpenAI + Notion</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Searching for leads on Google Maps manually</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a lead scraper.</strong> n8n calls Google Maps API → pulls names, numbers, categories → logs 100 leads to Sheets in 5 minutes.<br><span class="tool-badge">n8n + Google Maps API + Sheets</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Sending the same cold email to every prospect</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a personalised email automator.</strong> New Sheets row triggers n8n → OpenAI writes custom email → Gmail sends it instantly.<br><span class="tool-badge">n8n + OpenAI + Gmail + Sheets</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Building weekly reports for clients</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build an auto-report workflow.</strong> Every Friday, n8n pulls Sheets data → OpenAI formats the summary → Gmail sends it to the client.<br><span class="tool-badge">n8n + Sheets + OpenAI + Gmail</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Reposting content to multiple platforms</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a cross-posting workflow.</strong> Post on LinkedIn → Make.com detects it → copies to Instagram and Twitter automatically.<br><span class="tool-badge">Make.com free</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Sending payment reminders manually</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build an invoice reminder workflow.</strong> Sheets tracks due dates → n8n checks daily → Gmail sends a polite reminder 3 days before and on the due date.<br><span class="tool-badge">n8n + Sheets + Gmail</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Creating your daily task list every morning</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a morning briefing workflow.</strong> Every day at 7am, n8n creates a fresh Notion page with your task template pre-filled. Wake up to a ready plan.<br><span class="tool-badge">n8n + Notion</span></div></div>
+    </div>
+
+    <div class="amap">
+      <div class="amap-header"><span class="amap-task">Asking clients for testimonials manually</span><span class="amap-tag">stop now</span></div>
+      <div class="amap-body"><span class="amap-arrow">→</span><div class="amap-solution"><strong>Build a testimonial request workflow.</strong> Mark project "Complete" in Sheets → n8n waits 7 days → sends a Google Form link to the client automatically.<br><span class="tool-badge">n8n + Sheets + Gmail + Google Forms</span></div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">want to master system thinking faster?</div>
+    <div class="aaghaz-title">Where this thinking becomes<br><span>a structured, income-generating skill</span></div>
+    <div class="aaghaz-body">
+      System thinking is a learnable skill — but it compounds much faster with a mentor who can see your blind spots. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — teaches exactly this in their 12-week program: how to think in systems, build them in n8n, and sell them to clients in Pakistan and globally.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
