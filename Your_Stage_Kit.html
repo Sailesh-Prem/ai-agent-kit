@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Stage Kit · Sailesh Prem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+:root{--bg:#111213;--blue:#2979FF;--blue-dim:rgba(41,121,255,0.10);--blue-glow:rgba(41,121,255,0.18);--glass:rgba(255,255,255,0.04);--text:#F5F5F5;--muted:#6b7280;--green:#22c55e;--red:#ef4444;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;line-height:1.6;min-height:100vh;}
+.orb-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.orb{position:absolute;border-radius:50%;}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(41,121,255,0.09) 0%,transparent 70%);left:-200px;top:-100px;}
+.orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(41,121,255,0.06) 0%,transparent 70%);right:-100px;top:40%;}
+.orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(41,121,255,0.05) 0%,transparent 70%);left:30%;bottom:-100px;}
+.container{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue-glow);border-radius:100px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);background:var(--blue-dim);}
+.pulse{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.1;}
+h1 span{color:var(--blue);}
+.sub{color:var(--muted);font-size:14px;max-width:480px;}
+.from{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;}
+.from b{color:var(--blue);font-weight:500;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.15),transparent);margin:16px 0;}
+
+/* stage card */
+.stage{background:var(--glass);border:1px solid var(--blue-glow);border-radius:18px;overflow:hidden;margin-bottom:20px;position:relative;}
+.stage::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.35),transparent);}
+.stage-header{padding:20px 24px 16px;display:flex;align-items:center;gap:16px;border-bottom:1px solid rgba(41,121,255,0.08);}
+.stage-letter{width:52px;height:52px;border-radius:14px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:#fff;flex-shrink:0;}
+.stage-meta{flex:1;}
+.stage-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:3px;}
+.stage-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--text);}
+.stage-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--green);border:1px solid rgba(34,197,94,0.2);border-radius:4px;padding:3px 8px;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+.stage-body{padding:16px 24px;display:flex;flex-direction:column;gap:12px;}
+.stage-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.stage-resource{background:rgba(41,121,255,0.06);border:1px solid rgba(41,121,255,0.15);border-radius:10px;padding:14px 16px;}
+.res-label{font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:0.12em;color:var(--blue);margin-bottom:6px;}
+.res-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px;}
+.res-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+.res-link{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;border-radius:7px;padding:8px 16px;text-decoration:none;margin-top:10px;transition:opacity 0.2s;}
+.res-link:hover{opacity:0.85;}
+
+/* next steps */
+.next-card{background:rgba(255,255,255,0.025);border:1px solid rgba(41,121,255,0.08);border-radius:12px;padding:14px 18px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.next-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);min-width:24px;margin-top:2px;}
+.next-text{font-size:13px;color:var(--muted);line-height:1.55;}
+.next-text strong{color:var(--text);}
+
+/* aaghaz */
+.aaghaz-box{background:rgba(41,121,255,0.05);border:1px solid rgba(41,121,255,0.15);border-radius:16px;padding:28px 24px;margin:24px 0;position:relative;overflow:hidden;}
+.aaghaz-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.2),transparent);}
+.aaghaz-label{font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:10px;}
+.aaghaz-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:8px;line-height:1.2;}
+.aaghaz-title span{color:var(--blue);}
+.aaghaz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.aaghaz-link{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;border-radius:8px;padding:10px 20px;text-decoration:none;transition:opacity 0.2s;}
+.aaghaz-link:hover{opacity:0.85;}
+
+footer{border-top:1px solid rgba(41,121,255,0.1);padding:36px 0;text-align:center;}
+</style>
+</head>
+<body>
+<div class="orb-wrap"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="badge"><span class="pulse"></span>Your Stage · Your Kit · Right Now</div>
+    <h1>The Right Resource<br>for <span>Where You Are</span></h1>
+    <p class="sub">4 stages. 4 free kits. Find yours and start from exactly where you are — not where you think you should be.</p>
+    <span class="from">By <b>@sailesh prem</b> · karachi, pakistan</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- STAGE A -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-letter">A</div>
+      <div class="stage-meta">
+        <div class="stage-label">Stage A</div>
+        <div class="stage-title">I don't know where to start</div>
+      </div>
+      <div class="stage-tag">beginner</div>
+    </div>
+    <div class="stage-body">
+      <div class="stage-desc">You've heard about AI agents and automation but have no idea what tool to use, what to build, or how any of this turns into money. You need a clear path — not more tutorials. This is the most common stage and the most fixable one.</div>
+      <div class="stage-resource">
+        <div class="res-label">Your free resource</div>
+        <div class="res-name">The AI Agent Roadmap</div>
+        <div class="res-desc">4 weeks. 28 daily tasks. From zero knowledge to your first paying client — with no coding required. Every task is specific, every tool is free, and Week 4 ends with PKR in your account.</div>
+        <a class="res-link" href="https://sailesh-prem.github.io/ai-agent-kit/AI_Agent_Roadmap.html" target="_blank">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open the Roadmap
+        </a>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:4px;">Your 3 immediate actions:</div>
+      <div class="next-card"><span class="next-num">01.</span><span class="next-text"><strong>Sign up for n8n free cloud today.</strong> n8n.io → Start free. 2 minutes. This is your entire toolset for the first 4 weeks.</span></div>
+      <div class="next-card"><span class="next-num">02.</span><span class="next-text"><strong>Open the roadmap and tick Week 1, Day 1.</strong> Don't read ahead. Just do the next task.</span></div>
+      <div class="next-card"><span class="next-num">03.</span><span class="next-text"><strong>Find 10 local businesses on Instagram or Google Maps in your city.</strong> This is your future client list. Build it today.</span></div>
+    </div>
+  </div>
+
+  <!-- STAGE B -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-letter" style="background:rgba(41,121,255,0.4);">B</div>
+      <div class="stage-meta">
+        <div class="stage-label">Stage B</div>
+        <div class="stage-title">I'm learning but not building anything yet</div>
+      </div>
+      <div class="stage-tag">learner</div>
+    </div>
+    <div class="stage-body">
+      <div class="stage-desc">You know n8n exists. You've watched tutorials. You understand the concepts. But you haven't shipped a single working workflow to a real person yet. This is the most expensive stage — it burns time while producing no results. The fix is embarrassingly simple: build something today.</div>
+      <div class="stage-resource">
+        <div class="res-label">Your free resource</div>
+        <div class="res-name">The n8n Starter Workflow Kit</div>
+        <div class="res-desc">3 copy-paste workflows with node-by-node instructions. WhatsApp FAQ bot, lead gen emailer, and content repurposer — each buildable in under 2 hours. Stop watching. Start shipping.</div>
+        <a class="res-link" href="https://sailesh-prem.github.io/ai-agent-kit/n8n_Starter_Workflows.html" target="_blank">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open the Workflow Kit
+        </a>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:4px;">Your 3 immediate actions:</div>
+      <div class="next-card"><span class="next-num">01.</span><span class="next-text"><strong>Pick one workflow from the kit.</strong> The WhatsApp bot. Build it today — not this week. Today.</span></div>
+      <div class="next-card"><span class="next-num">02.</span><span class="next-text"><strong>Test it with 20 real messages.</strong> Send weird questions. Break it. Fix it. Get it demo-ready.</span></div>
+      <div class="next-card"><span class="next-num">03.</span><span class="next-text"><strong>Find one real business and show them the demo.</strong> Not a "pitch." Just: "I built this — want to see it for your business?"</span></div>
+    </div>
+  </div>
+
+  <!-- STAGE C -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-letter" style="background:rgba(41,121,255,0.25);border:2px solid var(--blue);">C</div>
+      <div class="stage-meta">
+        <div class="stage-label">Stage C</div>
+        <div class="stage-title">I'm building but afraid to charge</div>
+      </div>
+      <div class="stage-tag">builder</div>
+    </div>
+    <div class="stage-body">
+      <div class="stage-desc">You can build the thing. You've shown demos. People seem interested. But every time you get close to quoting a price, you second-guess yourself. "Maybe it's not good enough." "Maybe they'll say no." This is a confidence problem — and the only cure is a paid client. You need a system to get there, not more practice.</div>
+      <div class="stage-resource">
+        <div class="res-label">Your free resource</div>
+        <div class="res-name">The Client Ready Checklist</div>
+        <div class="res-desc">20 tasks across 4 phases: build foundation, find prospects, send DMs, close and deliver. Every step in sequence with a price reference card. Stop waiting to feel ready — use this instead.</div>
+        <a class="res-link" href="https://sailesh-prem.github.io/ai-agent-kit/Client_Ready_Checklist.html" target="_blank">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open the Checklist
+        </a>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:4px;">Your 3 immediate actions:</div>
+      <div class="next-card"><span class="next-num">01.</span><span class="next-text"><strong>Quote PKR 12,000 to the next interested prospect.</strong> Don't adjust. Don't negotiate on the first attempt. Just say the number.</span></div>
+      <div class="next-card"><span class="next-num">02.</span><span class="next-text"><strong>Build a personalised demo for their specific business first.</strong> The demo removes the risk from their side — and your nerves from yours.</span></div>
+      <div class="next-card"><span class="next-num">03.</span><span class="next-text"><strong>Collect 50% before you open n8n.</strong> The payment confirms they're serious. It also confirms you are.</span></div>
+    </div>
+  </div>
+
+  <!-- STAGE D -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-letter" style="background:var(--green);">D</div>
+      <div class="stage-meta">
+        <div class="stage-label">Stage D</div>
+        <div class="stage-title">I'm charging and want to scale</div>
+      </div>
+      <div class="stage-tag" style="color:var(--green);border-color:rgba(34,197,94,0.2);">scaling</div>
+    </div>
+    <div class="stage-body">
+      <div class="stage-desc">You have clients. You're getting paid. But you're still trading time for money — each client takes the same effort as the last. To scale, you need to stop selling custom work and start selling productised services with fixed scopes, fixed prices, and faster delivery. That's the shift from freelancer to agency owner.</div>
+      <div class="stage-resource">
+        <div class="res-label">Your free resource</div>
+        <div class="res-name">The AI Product Playbook</div>
+        <div class="res-desc">5 AI products each with a name, niche, price, delivery timeline, tools, and one-line pitch. Pick 2–3 to stack. When you're selling the same product repeatedly, your delivery time drops from 5 days to 1 day by client 5.</div>
+        <a class="res-link" href="https://sailesh-prem.github.io/ai-agent-kit/AI_Product_Playbook.html" target="_blank">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open the Playbook
+        </a>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:4px;">Your 3 immediate actions:</div>
+      <div class="next-card"><span class="next-num">01.</span><span class="next-text"><strong>Pick one product to standardise completely.</strong> Same scope. Same price. Same delivery time. Build a template for it so each new client takes 1 day not 5.</span></div>
+      <div class="next-card"><span class="next-num">02.</span><span class="next-text"><strong>Raise your price by 30% for new clients.</strong> You have proof now. Testimonials. Results. Your old price was for when you had none of that.</span></div>
+      <div class="next-card"><span class="next-num">03.</span><span class="next-text"><strong>Post your results publicly on LinkedIn.</strong> "I just delivered X for a client in Y city. Here's what I built." That post gets you the next client without a single cold DM.</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- AAGHAZ -->
+  <div class="aaghaz-box">
+    <div class="aaghaz-label">regardless of your stage</div>
+    <div class="aaghaz-title">The program that accelerates<br><span>every stage by months</span></div>
+    <div class="aaghaz-body">
+      Whether you're at A, B, C, or D — the fastest way to move to the next stage is structured mentorship. <strong style="color:var(--text);">Aaghaz AI</strong> — Asia's first AI startup institute — runs a 12-week program that takes you from wherever you are to a functioning AI business. 1:1 mentorship. 20+ expert sessions. Built for Pakistan.
+    </div>
+    <a class="aaghaz-link" href="https://www.aaghaz.ai/r/sailesh" target="_blank" rel="noopener">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Check out Aaghaz AI
+    </a>
+  </div>
+
+  <div style="background:var(--glass);border:1px solid var(--blue-glow);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(41,121,255,0.3),transparent);"></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue);margin-bottom:10px;">a new freebie every day</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:8px;">Follow <span style="color:var(--blue);">@Sailesh Prem</span> on LinkedIn</div>
+    <p style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto;">Comment the keyword on any post and the resource lands in your DMs instantly.</p>
+  </div>
+
+</div>
+<footer>
+  <div class="container">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px;">Sailesh <span style="color:var(--blue);">Prem</span></div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:8px;">IT Student · AI Agents · Sales · Karachi, Pakistan</div>
+    <p style="font-size:12px;color:var(--muted);max-width:340px;margin:0 auto 10px;">Free to share with credit. Tag @Sailesh Prem on LinkedIn if this helped.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(107,114,128,0.4);letter-spacing:0.1em;">© 2026 Sailesh Prem · Free Resource</p>
+  </div>
+</footer>
+</body>
+</html>
